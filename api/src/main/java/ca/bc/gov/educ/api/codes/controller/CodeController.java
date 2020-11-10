@@ -34,9 +34,9 @@ public class CodeController {
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_PROGRAM_BY_CODE_MAPPING)
-    public GradProgram getSpecificProgramCode(@PathVariable String pgmCode) { 
+    public GradProgram getSpecificProgramCode(@PathVariable String programCode) { 
     	logger.debug("getSpecificProgramCode : ");
-        return codeService.getSpecificProgramCode(pgmCode);
+        return codeService.getSpecificProgramCode(programCode);
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_COUNTRY_MAPPING)
@@ -46,9 +46,9 @@ public class CodeController {
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_COUNTRY_BY_CODE_MAPPING)
-    public GradCountry getSpecificCountryCode(@PathVariable String contryCode) { 
+    public GradCountry getSpecificCountryCode(@PathVariable String countryCode) { 
     	logger.debug("getSpecificCountryCode : ");
-        return codeService.getSpecificCountryCode(contryCode);
+        return codeService.getSpecificCountryCode(countryCode);
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_PROVINCE_MAPPING)
@@ -58,8 +58,8 @@ public class CodeController {
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_PROVINCE_BY_CODE_MAPPING)
-    public GradProvince getSpecificProvinceCode(@PathVariable String provCode) { 
+    public GradProvince getSpecificProvinceCode(@PathVariable String provinceCode) { 
     	logger.debug("getSpecificProvinceCode : ");
-        return codeService.getSpecificProvinceCode(provCode);
+        return codeService.getSpecificProvinceCode(provinceCode);
     }
 }

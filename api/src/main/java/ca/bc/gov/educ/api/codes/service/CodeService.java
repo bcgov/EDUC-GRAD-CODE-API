@@ -4,6 +4,9 @@ package ca.bc.gov.educ.api.codes.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,7 @@ public class CodeService {
      * @return GradProgram 
      * @throws java.lang.Exception
      */
+    @Transactional
     public List<GradProgram> getAllProgramList() {
         List<GradProgram> programList  = new ArrayList<GradProgram>();
         try {
@@ -60,10 +64,12 @@ public class CodeService {
         return programList;
     }
     
+    @Transactional
     public GradProgram getSpecificProgramCode(String pgmCode) {
-		return gradProgramTransformer.transformToDTO(gradProgramRepository.findById(pgmCode));
+		return gradProgramTransformer.transformToDTO(gradProgramRepository.findById(StringUtils.toRootUpperCase(pgmCode)));
 	}
 	
+    @Transactional
     public List<GradCountry> getAllCountryCodeList() {
 	        List<GradCountry> gradSpecialCaseList  = new ArrayList<GradCountry>();
 	        try {
@@ -75,10 +81,12 @@ public class CodeService {
 	        return gradSpecialCaseList;
 	    }
 
+    @Transactional
 	public GradCountry getSpecificCountryCode(String countryCode) {
-		return gradCountryTransformer.transformToDTO(gradCountryRepository.findById(countryCode));
+		return gradCountryTransformer.transformToDTO(gradCountryRepository.findById(StringUtils.toRootUpperCase(countryCode)));
 	}
 
+    @Transactional
 	public List<GradProvince> getAllProvinceCodeList() {
 		List<GradProvince> gradLetterGradeList  = new ArrayList<GradProvince>();
         try {
@@ -90,7 +98,8 @@ public class CodeService {
         return gradLetterGradeList;
 	}
 
+    @Transactional
 	public GradProvince getSpecificProvinceCode(String provCode) {
-		return gradProvinceTransformer.transformToDTO(gradProvinceRepository.findById(provCode));
+		return gradProvinceTransformer.transformToDTO(gradProvinceRepository.findById(StringUtils.toRootUpperCase(provCode)));
 	}
 }
