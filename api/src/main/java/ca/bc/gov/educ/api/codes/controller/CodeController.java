@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
+import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.service.CodeService;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
 
@@ -61,5 +62,17 @@ public class CodeController {
     public GradProvince getSpecificProvinceCode(@PathVariable String provinceCode) { 
     	logger.debug("getSpecificProvinceCode : ");
         return codeService.getSpecificProvinceCode(provinceCode);
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_UNGRAD_MAPPING)
+    public List<GradUngradReasons> getAllUngradReasonCodeList() { 
+    	logger.debug("getAllUngradReasonCodeList : ");
+        return codeService.getAllUngradReasonCodeList();
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_UNGRAD_BY_CODE_MAPPING)
+    public GradUngradReasons getSpecificUngradReasonCode(@PathVariable String reasonCode) { 
+    	logger.debug("getSpecificUngradReasonCode : ");
+        return codeService.getSpecificUngradReasonCode(reasonCode);
     }
 }

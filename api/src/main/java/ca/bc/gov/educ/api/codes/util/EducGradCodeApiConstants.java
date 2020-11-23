@@ -17,6 +17,10 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_PROGRAM_MAPPING = "/program";
     public static final String GET_ALL_PROGRAM_BY_CODE_MAPPING = "/program/{programCode}";
     
+    public static final String GET_ALL_UNGRAD_MAPPING = "/ungradreason";
+    public static final String GET_ALL_UNGRAD_BY_CODE_MAPPING = "/ungradreason/{reasonCode}";
+    
+    
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";
     public static final Date DEFAULT_CREATED_TIMESTAMP = new Date();
