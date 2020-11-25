@@ -84,8 +84,8 @@ public class CodeController {
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_BY_CODE_MAPPING)
-    public GradCertificateTypes getSpecificCertificateTypeCode(@PathVariable String reasonCode) { 
+    public GradCertificateTypes getSpecificCertificateTypeCode(@PathVariable String certTypeCode) { 
     	logger.debug("getSpecificCertificateTypeCode : ");
-        return codeService.getSpecificCertificateTypeCode(reasonCode);
+        return codeService.getSpecificCertificateTypeCode(certTypeCode);
     }
 }
