@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
@@ -74,5 +75,17 @@ public class CodeController {
     public GradUngradReasons getSpecificUngradReasonCode(@PathVariable String reasonCode) { 
     	logger.debug("getSpecificUngradReasonCode : ");
         return codeService.getSpecificUngradReasonCode(reasonCode);
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_MAPPING)
+    public List<GradCertificateTypes> getAllCertificateTypeCodeList() { 
+    	logger.debug("getAllCertificateTypeCodeList : ");
+        return codeService.getAllCertificateTypeCodeList();
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_BY_CODE_MAPPING)
+    public GradCertificateTypes getSpecificCertificateTypeCode(@PathVariable String reasonCode) { 
+    	logger.debug("getSpecificCertificateTypeCode : ");
+        return codeService.getSpecificCertificateTypeCode(reasonCode);
     }
 }

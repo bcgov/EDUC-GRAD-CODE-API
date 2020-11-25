@@ -20,6 +20,9 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_UNGRAD_MAPPING = "/ungradreason";
     public static final String GET_ALL_UNGRAD_BY_CODE_MAPPING = "/ungradreason/{reasonCode}";
     
+    public static final String GET_ALL_CERTIFICATE_TYPE_MAPPING = "/certificatetype";
+    public static final String GET_ALL_CERTIFICATE_TYPE_BY_CODE_MAPPING = "/certificatetype/{certTypeCode}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";

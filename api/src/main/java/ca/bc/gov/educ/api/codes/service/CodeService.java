@@ -12,14 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
+import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCountryTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
+import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCountryRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
@@ -52,6 +55,12 @@ public class CodeService {
 
     @Autowired
     private GradUngradReasonsTransformer gradUngradReasonsTransformer;
+    
+    @Autowired
+    private GradCertificateTypesRepository gradCertificateTypesRepository;  
+
+    @Autowired
+    private GradCertificateTypesTransformer gradCertificateTypesTransformer;
 
     private static Logger logger = LoggerFactory.getLogger(CodeService.class);
 
@@ -128,4 +137,21 @@ public class CodeService {
 	public GradUngradReasons getSpecificUngradReasonCode(String provCode) {
 		return gradUngradReasonsTransformer.transformToDTO(gradUngradReasonsRepository.findById(StringUtils.toRootUpperCase(provCode)));
 	}
+    
+    @Transactional
+  	public List<GradCertificateTypes> getAllCertificateTypeCodeList() {
+  		List<GradCertificateTypes> gradCertificateTypeList  = new ArrayList<GradCertificateTypes>();
+          try {
+          	gradCertificateTypeList = gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.findAll());            
+          } catch (Exception e) {
+              logger.debug("Exception:" + e);
+          }
+
+          return gradCertificateTypeList;
+  	}
+
+      @Transactional
+  	public GradCertificateTypes getSpecificCertificateTypeCode(String provCode) {
+  		return gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.findById(StringUtils.toRootUpperCase(provCode)));
+  	}
 }
