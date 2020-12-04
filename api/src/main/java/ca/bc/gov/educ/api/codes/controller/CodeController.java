@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +20,15 @@ import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.service.CodeService;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @CrossOrigin
 @RestController
 @RequestMapping(EducGradCodeApiConstants.GRAD_CODE_API_ROOT_MAPPING)
+@EnableResourceServer
+@OpenAPIDefinition(info = @Info(title = "API for Code Data.", description = "This Read API is for Reading Code data.", version = "1"), security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_COUNTRY_CODE_DATA","READ_GRAD_PROVINCE_CODE_DATA","READ_GRAD_PROGRAM_CODE_DATA","READ_GRAD_UNGRAD_CODE_DATA","READ_GRAD_CERTIFICATE_CODE_DATA"})})
 public class CodeController {
 
     private static Logger logger = LoggerFactory.getLogger(CodeController.class);
@@ -30,60 +37,70 @@ public class CodeController {
     CodeService codeService;
 
     @GetMapping(EducGradCodeApiConstants.GET_ALL_PROGRAM_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_PROGRAM_CODE_DATA')")
     public List<GradProgram> getAllPrograms() { 
     	logger.debug("getAllPrograms : ");
         return codeService.getAllProgramList();
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_PROGRAM_BY_CODE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_PROGRAM_CODE_DATA')")
     public GradProgram getSpecificProgramCode(@PathVariable String programCode) { 
     	logger.debug("getSpecificProgramCode : ");
         return codeService.getSpecificProgramCode(programCode);
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_COUNTRY_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_COUNTRY_CODE_DATA')")
     public List<GradCountry> getAllCountryCodeList() { 
     	logger.debug("getAllCountryCodeList : ");
         return codeService.getAllCountryCodeList();
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_COUNTRY_BY_CODE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_COUNTRY_CODE_DATA')")    
     public GradCountry getSpecificCountryCode(@PathVariable String countryCode) { 
     	logger.debug("getSpecificCountryCode : ");
         return codeService.getSpecificCountryCode(countryCode);
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_PROVINCE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_PROVINCE_CODE_DATA')")
     public List<GradProvince> getAllProvinceCodeList() { 
     	logger.debug("getAllProvinceCodeList : ");
         return codeService.getAllProvinceCodeList();
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_PROVINCE_BY_CODE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_PROVINCE_CODE_DATA')")
     public GradProvince getSpecificProvinceCode(@PathVariable String provinceCode) { 
     	logger.debug("getSpecificProvinceCode : ");
         return codeService.getSpecificProvinceCode(provinceCode);
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_UNGRAD_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_UNGRAD_CODE_DATA')")
     public List<GradUngradReasons> getAllUngradReasonCodeList() { 
     	logger.debug("getAllUngradReasonCodeList : ");
         return codeService.getAllUngradReasonCodeList();
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_UNGRAD_BY_CODE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_UNGRAD_CODE_DATA')")
     public GradUngradReasons getSpecificUngradReasonCode(@PathVariable String reasonCode) { 
     	logger.debug("getSpecificUngradReasonCode : ");
         return codeService.getSpecificUngradReasonCode(reasonCode);
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_CERTIFICATE_CODE_DATA')")
     public List<GradCertificateTypes> getAllCertificateTypeCodeList() { 
     	logger.debug("getAllCertificateTypeCodeList : ");
         return codeService.getAllCertificateTypeCodeList();
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_BY_CODE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_CERTIFICATE_CODE_DATA')")
     public GradCertificateTypes getSpecificCertificateTypeCode(@PathVariable String certTypeCode) { 
     	logger.debug("getSpecificCertificateTypeCode : ");
         return codeService.getSpecificCertificateTypeCode(certTypeCode);
