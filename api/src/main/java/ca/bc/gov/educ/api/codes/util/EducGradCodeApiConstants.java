@@ -26,6 +26,9 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_GRAD_MESSAGING_MAPPING = "/gradmessages";
     public static final String GET_ALL_GRAD_MESSAGING_BY_PRG_CODE_AND_MESSAGE_TYPE_MAPPING = "/gradmessages/pgmCode/{pgmCode}/msgType/{msgType}";
     
+    public static final String GET_ALL_GRAD_CAREER_PROGRAM_MAPPING = "/careerprogram";
+    public static final String GET_ALL_GRAD_CAREER_PROGRAM_BY_CODE_MAPPING = "/careerprogram/{cpCode}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";

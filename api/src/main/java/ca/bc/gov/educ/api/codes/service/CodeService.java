@@ -12,18 +12,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ca.bc.gov.educ.api.codes.model.dto.GradCareerProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
+import ca.bc.gov.educ.api.codes.model.transformer.GradCareerProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCountryTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradMessagingTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
+import ca.bc.gov.educ.api.codes.repository.GradCareerProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCountryRepository;
 import ca.bc.gov.educ.api.codes.repository.GradMessagingRepository;
@@ -70,6 +73,12 @@ public class CodeService {
 
     @Autowired
     private GradMessagingTransformer gradMessagingTransformer;
+    
+    @Autowired
+    private GradCareerProgramRepository gradCareerProgramRepository;  
+
+    @Autowired
+    private GradCareerProgramTransformer gradCareerProgramTransformer;
 
     private static Logger logger = LoggerFactory.getLogger(CodeService.class);
 
@@ -178,4 +187,21 @@ public class CodeService {
 	public GradMessaging getSpecificGradMessagingCode(String pgmCode, String msgType) {
 		return gradMessagingTransformer.transformToDTO(gradMessagingRepository.findByProgramCodeAndMessageType(pgmCode,msgType));
 	}
+	
+	@Transactional
+  	public List<GradCareerProgram> getAllCareerProgramCodeList() {
+  		List<GradCareerProgram> gradCareerProgramList  = new ArrayList<GradCareerProgram>();
+          try {
+          	gradCareerProgramList = gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.findAll());            
+          } catch (Exception e) {
+              logger.debug("Exception:" + e);
+          }
+
+          return gradCareerProgramList;
+  	}
+
+      @Transactional
+  	public GradCareerProgram getSpecificCareerProgramCode(String cpc) {
+  		return gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.findById(StringUtils.toRootUpperCase(cpc)));
+  	}
 }

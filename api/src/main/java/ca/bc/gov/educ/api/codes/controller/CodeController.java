@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.bc.gov.educ.api.codes.model.dto.GradCareerProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
@@ -29,7 +30,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping(EducGradCodeApiConstants.GRAD_CODE_API_ROOT_MAPPING)
 @EnableResourceServer
-@OpenAPIDefinition(info = @Info(title = "API for Code Data.", description = "This Read API is for Reading Code data.", version = "1"), security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_COUNTRY_CODE_DATA","READ_GRAD_PROVINCE_CODE_DATA","READ_GRAD_PROGRAM_CODE_DATA","READ_GRAD_UNGRAD_CODE_DATA","READ_GRAD_CERTIFICATE_CODE_DATA","READ_GRAD_MESSEGING_CODE_DATA"})})
+@OpenAPIDefinition(info = @Info(title = "API for Code Data.", description = "This Read API is for Reading Code data.", version = "1"), security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_COUNTRY_CODE_DATA","READ_GRAD_PROVINCE_CODE_DATA","READ_GRAD_PROGRAM_CODE_DATA","READ_GRAD_UNGRAD_CODE_DATA","READ_GRAD_CERTIFICATE_CODE_DATA","READ_GRAD_MESSEGING_CODE_DATA","READ_GRAD_CAREER_PROGRAM_CODE_DATA"})})
 public class CodeController {
 
     private static Logger logger = LoggerFactory.getLogger(CodeController.class);
@@ -119,5 +120,19 @@ public class CodeController {
     public GradMessaging getSpecificGradMessagingCode(@PathVariable String pgmCode,@PathVariable String msgType) { 
     	logger.debug("getSpecificGradMessagingCode : ");
         return codeService.getSpecificGradMessagingCode(pgmCode,msgType);
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_CAREER_PROGRAM_CODE_DATA')")
+    public List<GradCareerProgram> getAllCareerPrograms() { 
+    	logger.debug("getAllPrograms : ");
+        return codeService.getAllCareerProgramCodeList();
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_BY_CODE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_CAREER_PROGRAM_CODE_DATA')")
+    public GradCareerProgram getSpecificCareerProgramCode(@PathVariable String cpCode) { 
+    	logger.debug("getSpecificCareerProgramCode : ");
+        return codeService.getSpecificCareerProgramCode(cpCode);
     }
 }
