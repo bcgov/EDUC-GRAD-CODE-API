@@ -14,16 +14,19 @@ import org.springframework.stereotype.Service;
 
 import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
+import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCountryTransformer;
+import ca.bc.gov.educ.api.codes.model.transformer.GradMessagingTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
 import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCountryRepository;
+import ca.bc.gov.educ.api.codes.repository.GradMessagingRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
@@ -61,6 +64,12 @@ public class CodeService {
 
     @Autowired
     private GradCertificateTypesTransformer gradCertificateTypesTransformer;
+    
+    @Autowired
+    private GradMessagingRepository gradMessagingRepository;  
+
+    @Autowired
+    private GradMessagingTransformer gradMessagingTransformer;
 
     private static Logger logger = LoggerFactory.getLogger(CodeService.class);
 
@@ -154,4 +163,19 @@ public class CodeService {
   	public GradCertificateTypes getSpecificCertificateTypeCode(String provCode) {
   		return gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.findById(StringUtils.toRootUpperCase(provCode)));
   	}
+
+	public List<GradMessaging> getAllGradMessagingList() {
+		List<GradMessaging> gradMessagingList  = new ArrayList<GradMessaging>();
+        try {
+        	gradMessagingList = gradMessagingTransformer.transformToDTO(gradMessagingRepository.findAll());            
+        } catch (Exception e) {
+            logger.debug("Exception:" + e);
+        }
+
+        return gradMessagingList;
+	}
+
+	public GradMessaging getSpecificGradMessagingCode(String pgmCode, String msgType) {
+		return gradMessagingTransformer.transformToDTO(gradMessagingRepository.findByProgramCodeAndMessageType(pgmCode,msgType));
+	}
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
+import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
@@ -28,7 +29,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping(EducGradCodeApiConstants.GRAD_CODE_API_ROOT_MAPPING)
 @EnableResourceServer
-@OpenAPIDefinition(info = @Info(title = "API for Code Data.", description = "This Read API is for Reading Code data.", version = "1"), security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_COUNTRY_CODE_DATA","READ_GRAD_PROVINCE_CODE_DATA","READ_GRAD_PROGRAM_CODE_DATA","READ_GRAD_UNGRAD_CODE_DATA","READ_GRAD_CERTIFICATE_CODE_DATA"})})
+@OpenAPIDefinition(info = @Info(title = "API for Code Data.", description = "This Read API is for Reading Code data.", version = "1"), security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_COUNTRY_CODE_DATA","READ_GRAD_PROVINCE_CODE_DATA","READ_GRAD_PROGRAM_CODE_DATA","READ_GRAD_UNGRAD_CODE_DATA","READ_GRAD_CERTIFICATE_CODE_DATA","READ_GRAD_MESSEGING_CODE_DATA"})})
 public class CodeController {
 
     private static Logger logger = LoggerFactory.getLogger(CodeController.class);
@@ -104,5 +105,19 @@ public class CodeController {
     public GradCertificateTypes getSpecificCertificateTypeCode(@PathVariable String certTypeCode) { 
     	logger.debug("getSpecificCertificateTypeCode : ");
         return codeService.getSpecificCertificateTypeCode(certTypeCode);
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_MESSAGING_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_MESSAGING_CODE_DATA')")
+    public List<GradMessaging> getAllGradMessagingList() { 
+    	logger.debug("getAllGradMessagingList : ");
+        return codeService.getAllGradMessagingList();
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_MESSAGING_BY_PRG_CODE_AND_MESSAGE_TYPE_MAPPING)
+    @PreAuthorize("#oauth2.hasScope('READ_GRAD_MESSAGING_CODE_DATA')")
+    public GradMessaging getSpecificGradMessagingCode(@PathVariable String pgmCode,@PathVariable String msgType) { 
+    	logger.debug("getSpecificGradMessagingCode : ");
+        return codeService.getSpecificGradMessagingCode(pgmCode,msgType);
     }
 }

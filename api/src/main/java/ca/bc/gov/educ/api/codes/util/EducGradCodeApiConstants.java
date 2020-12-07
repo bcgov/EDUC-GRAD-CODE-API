@@ -23,6 +23,9 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_CERTIFICATE_TYPE_MAPPING = "/certificatetype";
     public static final String GET_ALL_CERTIFICATE_TYPE_BY_CODE_MAPPING = "/certificatetype/{certTypeCode}";
     
+    public static final String GET_ALL_GRAD_MESSAGING_MAPPING = "/gradmessages";
+    public static final String GET_ALL_GRAD_MESSAGING_BY_PRG_CODE_AND_MESSAGE_TYPE_MAPPING = "/gradmessages/pgmCode/{pgmCode}/msgType/{msgType}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";
