@@ -1,15 +1,16 @@
 package ca.bc.gov.educ.api.codes.model.dto;
 
-import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Component
-public class GradMessaging {
+public class GradMessaging extends BaseModel{
 
 	private UUID id;	
 	private String programCode;	
@@ -19,19 +20,14 @@ public class GradMessaging {
 	private String honours;	
 	private String adIBPrograms;	
 	private String programCadre;	
-	private String careerPrograms;	
-	private String createdBy;	
-	private Date createdTimestamp;	
-	private String updatedBy;	
-	private Date updatedTimestamp;
+	private String careerPrograms;
 	
 	@Override
 	public String toString() {
 		return "GradMessaging [id=" + id + ", programCode=" + programCode + ", messageType=" + messageType
 				+ ", mainMessage=" + mainMessage + ", gradDate=" + gradDate + ", honours=" + honours + ", adIBPrograms="
 				+ adIBPrograms + ", programCadre=" + programCadre + ", careerPrograms=" + careerPrograms
-				+ ", createdBy=" + createdBy + ", createdTimestamp=" + createdTimestamp + ", updatedBy=" + updatedBy
-				+ ", updatedTimestamp=" + updatedTimestamp + "]";
+				+ "]";
 	}
 	
 	

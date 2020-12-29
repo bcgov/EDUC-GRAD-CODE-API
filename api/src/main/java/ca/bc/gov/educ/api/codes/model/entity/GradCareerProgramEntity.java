@@ -10,12 +10,14 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Immutable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Immutable
 @Entity
 @Table(name = "GRAD_CAREER_PROGRAM")
-public class GradCareerProgramEntity {
+public class GradCareerProgramEntity extends BaseEntity {
    
 	@Id
 	@Column(name = "CODE", nullable = false)
@@ -29,18 +31,4 @@ public class GradCareerProgramEntity {
 	
 	@Column(name = "END_DT", nullable = true)
     private Date endDate;	
-	
-	@Column(name = "CREATED_BY", nullable = true)
-    private String createdBy;
-	
-	@Column(name = "CREATED_TIMESTAMP", nullable = true)
-    private Date createdTimestamp;
-	
-	@Column(name = "UPDATED_BY", nullable = true)
-    private String updatedBy;
-	
-	@Column(name = "UPDATED_TIMESTAMP", nullable = true)
-    private Date updatedTimestamp;	
-	
-	
 }

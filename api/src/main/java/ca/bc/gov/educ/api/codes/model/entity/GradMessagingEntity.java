@@ -1,6 +1,5 @@
 package ca.bc.gov.educ.api.codes.model.entity;
 
-import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -11,12 +10,14 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Immutable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Immutable
 @Entity
 @Table(name = "GRAD_MESSAGING")
-public class GradMessagingEntity {
+public class GradMessagingEntity extends BaseEntity {
    
 	@Id
 	@Column(name = "ID", nullable = false)
@@ -44,17 +45,5 @@ public class GradMessagingEntity {
     private String programCadre;
 	
 	@Column(name = "CAREER_PGMS", nullable = false)
-    private String careerPrograms;		
-	
-	@Column(name = "CREATED_BY", nullable = true)
-    private String createdBy;
-	
-	@Column(name = "CREATED_TIMESTAMP", nullable = true)
-    private Date createdTimestamp;
-	
-	@Column(name = "UPDATED_BY", nullable = true)
-    private String updatedBy;
-	
-	@Column(name = "UPDATED_TIMESTAMP", nullable = true)
-    private Date updatedTimestamp;	
+    private String careerPrograms;
 }
