@@ -32,6 +32,9 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_GRAD_STATUS_CODE_MAPPING = "/gradstatus";
     public static final String GET_ALL_GRAD_STATUS_CODE_BY_CODE_MAPPING = "/gradstatus/{statusCode}";
     
+    public static final String GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING = "/gradprogramtype";
+    public static final String GET_ALL_GRAD_PROGRAM_TYPE_CODE_BY_CODE_MAPPING = "/gradprogramtype/{typeCode}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";

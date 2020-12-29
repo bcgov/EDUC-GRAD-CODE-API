@@ -17,6 +17,7 @@ import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
+import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradStatusCodes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
@@ -25,6 +26,7 @@ import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransforme
 import ca.bc.gov.educ.api.codes.model.transformer.GradCountryTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradMessagingTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
+import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradStatusCodesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
@@ -33,6 +35,7 @@ import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCountryRepository;
 import ca.bc.gov.educ.api.codes.repository.GradMessagingRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProgramRepository;
+import ca.bc.gov.educ.api.codes.repository.GradProgramTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
 import ca.bc.gov.educ.api.codes.repository.GradStatusCodesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
@@ -88,6 +91,12 @@ public class CodeService {
 
     @Autowired
     private GradStatusCodesTransformer gradStatusCodesTransformer;
+    
+    @Autowired
+    private GradProgramTypesRepository gradProgramTypesRepository;  
+
+    @Autowired
+    private GradProgramTypesTransformer gradProgramTypesTransformer;
 
     private static Logger logger = LoggerFactory.getLogger(CodeService.class);
 
@@ -229,5 +238,22 @@ public class CodeService {
     @Transactional
   	public GradStatusCodes getSpecificGradStatusCode(String statusCode) {
   		return gradStatusCodesTransformer.transformToDTO(gradStatusCodesRepository.findById(StringUtils.toRootUpperCase(statusCode)));
+  	}
+    
+    @Transactional
+  	public List<GradProgramTypes> getAllProgramTypeCodeList() {
+  		List<GradProgramTypes> gradProgramTypesList  = new ArrayList<GradProgramTypes>();
+          try {
+          	gradProgramTypesList = gradProgramTypesTransformer.transformToDTO(gradProgramTypesRepository.findAll());            
+          } catch (Exception e) {
+              logger.debug("Exception:" + e);
+          }
+
+          return gradProgramTypesList;
+  	}
+
+      @Transactional
+  	public GradProgramTypes getSpecificProgramTypeCode(String typeCode) {
+  		return gradProgramTypesTransformer.transformToDTO(gradProgramTypesRepository.findById(StringUtils.toRootUpperCase(typeCode)));
   	}
 }

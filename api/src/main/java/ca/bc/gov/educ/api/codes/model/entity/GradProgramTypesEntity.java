@@ -14,8 +14,8 @@ import lombok.Data;
 @Data
 @Immutable
 @Entity
-@Table(name = "GRAD_CERTIFICATE_TYPES")
-public class GradCertificateTypesEntity {
+@Table(name = "GRAD_PROGRAM_TYPE")
+public class GradProgramTypesEntity {
    
 	@Id
 	@Column(name = "CODE", nullable = false)

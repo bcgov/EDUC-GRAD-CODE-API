@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Component
-public class GradCertificateTypes {
+public class GradProgramTypes {
 
 	private String code;	
 	private String description;	
@@ -19,7 +19,7 @@ public class GradCertificateTypes {
 	
 	@Override
 	public String toString() {
-		return "GradCertificateTypes [code=" + code + ", description=" + description + ", createdBy=" + createdBy
+		return "GradProgramTypes [code=" + code + ", description=" + description + ", createdBy=" + createdBy
 				+ ", createdTimestamp=" + createdTimestamp + ", updatedBy=" + updatedBy + ", updatedTimestamp="
 				+ updatedTimestamp + "]";
 	}

@@ -18,6 +18,7 @@ import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
+import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradStatusCodes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
@@ -150,5 +151,19 @@ public class CodeController {
     public GradStatusCodes getSpecificStatusCode(@PathVariable String statusCode) { 
     	logger.debug("getSpecificStatusCode : ");
         return codeService.getSpecificGradStatusCode(statusCode);
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_PROGRAM_TYPE_CODE)
+    public List<GradProgramTypes> getAllProgramTypeCodeList() { 
+    	logger.debug("getAllProgramTypeCodeList : ");
+        return codeService.getAllProgramTypeCodeList();
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_PROGRAM_TYPE_CODE)
+    public GradProgramTypes getSpecificProgramTypeCode(@PathVariable String typeCode) { 
+    	logger.debug("getSpecificProgramTypeCode : ");
+        return codeService.getSpecificProgramTypeCode(typeCode);
     }
 }
