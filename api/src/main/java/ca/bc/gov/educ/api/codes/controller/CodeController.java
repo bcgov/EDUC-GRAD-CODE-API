@@ -21,6 +21,7 @@ import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
+import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradStatusCodes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.service.CodeService;
@@ -215,6 +216,25 @@ public class CodeController {
     public ResponseEntity<GradProgramTypes> getSpecificProgramTypeCode(@PathVariable String typeCode) { 
     	logger.debug("getSpecificProgramTypeCode : ");
     	GradProgramTypes gradResponse = codeService.getSpecificProgramTypeCode(typeCode);
+    	if(gradResponse != null) {
+    		return response.GET(gradResponse);
+    	}else {
+    		return response.NOT_FOUND();
+    	}
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_REQUIREMENT_TYPE_CODE)
+    public ResponseEntity<List<GradRequirementTypes>> getAllRequirementTypeCodeList() { 
+    	logger.debug("getAllRequirementTypeCodeList : ");
+        return response.GET(codeService.getAllRequirementTypeCodeList());
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_REQUIREMENT_TYPE_CODE)
+    public ResponseEntity<GradRequirementTypes> getSpecificRequirementTypeCode(@PathVariable String typeCode) { 
+    	logger.debug("getSpecificRequirementTypeCode : ");
+    	GradRequirementTypes gradResponse = codeService.getSpecificRequirementTypeCode(typeCode);
     	if(gradResponse != null) {
     		return response.GET(gradResponse);
     	}else {

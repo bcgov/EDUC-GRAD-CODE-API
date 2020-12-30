@@ -19,6 +19,7 @@ import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
+import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradStatusCodes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.model.entity.GradCareerProgramEntity;
@@ -28,6 +29,7 @@ import ca.bc.gov.educ.api.codes.model.entity.GradMessagingEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradProgramEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradProgramTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradProvinceEntity;
+import ca.bc.gov.educ.api.codes.model.entity.GradRequirementTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradStatusCodesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradUngradReasonsEntity;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCareerProgramTransformer;
@@ -37,6 +39,7 @@ import ca.bc.gov.educ.api.codes.model.transformer.GradMessagingTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
+import ca.bc.gov.educ.api.codes.model.transformer.GradRequirementTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradStatusCodesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
 import ca.bc.gov.educ.api.codes.repository.GradCareerProgramRepository;
@@ -46,6 +49,7 @@ import ca.bc.gov.educ.api.codes.repository.GradMessagingRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProgramTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
+import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradStatusCodesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
 
@@ -105,6 +109,12 @@ public class CodeService {
 
 	@Autowired
 	private GradProgramTypesTransformer gradProgramTypesTransformer;
+	
+	@Autowired
+	private GradRequirementTypesRepository gradRequirementTypesRepository;
+
+	@Autowired
+	private GradRequirementTypesTransformer gradRequirementTypesTransformer;
 
 	private static Logger logger = LoggerFactory.getLogger(CodeService.class);
 
@@ -310,6 +320,29 @@ public class CodeService {
 				.findById(StringUtils.toRootUpperCase(typeCode));
 		if (entity.isPresent()) {
 			return gradProgramTypesTransformer.transformToDTO(entity.get());
+		} else {
+			return null;
+		}
+	}
+	
+	@Transactional
+	public List<GradRequirementTypes> getAllRequirementTypeCodeList() {
+		List<GradRequirementTypes> gradRequirementTypesList = new ArrayList<GradRequirementTypes>();
+		try {
+			gradRequirementTypesList = gradRequirementTypesTransformer.transformToDTO(gradRequirementTypesRepository.findAll());
+		} catch (Exception e) {
+			logger.debug("Exception:" + e);
+		}
+
+		return gradRequirementTypesList;
+	}
+
+	@Transactional
+	public GradRequirementTypes getSpecificRequirementTypeCode(String typeCode) {
+		Optional<GradRequirementTypesEntity> entity = gradRequirementTypesRepository
+				.findById(StringUtils.toRootUpperCase(typeCode));
+		if (entity.isPresent()) {
+			return gradRequirementTypesTransformer.transformToDTO(entity.get());
 		} else {
 			return null;
 		}

@@ -35,6 +35,9 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING = "/gradprogramtype";
     public static final String GET_ALL_GRAD_PROGRAM_TYPE_CODE_BY_CODE_MAPPING = "/gradprogramtype/{typeCode}";
     
+    public static final String GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING = "/gradrequirementtype";
+    public static final String GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_BY_CODE_MAPPING = "/gradrequirementtype/{typeCode}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";
