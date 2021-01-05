@@ -14,14 +14,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Immutable
 @Entity
-@Table(name = "GRAD_CERTIFICATE_TYPES")
-public class GradCertificateTypesEntity extends BaseEntity {
+@Table(name = "GRAD_STATUS_CODES")
+public class GradStatusCodesEntity extends BaseEntity {
    
 	@Id
 	@Column(name = "CODE", nullable = false)
     private String code; 
 	
+	@Column(name = "NAME", nullable = true)
+    private String name;
+	
 	@Column(name = "DESCRIPTION", nullable = true)
     private String description;	
-	
 }

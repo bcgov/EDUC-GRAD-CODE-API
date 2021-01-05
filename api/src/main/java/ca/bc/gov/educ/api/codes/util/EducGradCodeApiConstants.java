@@ -23,6 +23,21 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_CERTIFICATE_TYPE_MAPPING = "/certificatetype";
     public static final String GET_ALL_CERTIFICATE_TYPE_BY_CODE_MAPPING = "/certificatetype/{certTypeCode}";
     
+    public static final String GET_ALL_GRAD_MESSAGING_MAPPING = "/gradmessages";
+    public static final String GET_ALL_GRAD_MESSAGING_BY_PRG_CODE_AND_MESSAGE_TYPE_MAPPING = "/gradmessages/pgmCode/{pgmCode}/msgType/{msgType}";
+    
+    public static final String GET_ALL_GRAD_CAREER_PROGRAM_MAPPING = "/careerprogram";
+    public static final String GET_ALL_GRAD_CAREER_PROGRAM_BY_CODE_MAPPING = "/careerprogram/{cpCode}";
+    
+    public static final String GET_ALL_GRAD_STATUS_CODE_MAPPING = "/gradstatus";
+    public static final String GET_ALL_GRAD_STATUS_CODE_BY_CODE_MAPPING = "/gradstatus/{statusCode}";
+    
+    public static final String GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING = "/gradprogramtype";
+    public static final String GET_ALL_GRAD_PROGRAM_TYPE_CODE_BY_CODE_MAPPING = "/gradprogramtype/{typeCode}";
+    
+    public static final String GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING = "/gradrequirementtype";
+    public static final String GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_BY_CODE_MAPPING = "/gradrequirementtype/{typeCode}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";
@@ -31,7 +46,7 @@ public class EducGradCodeApiConstants {
     public static final Date DEFAULT_UPDATED_TIMESTAMP = new Date();
 
     //Default Date format constants
-    public static final String DEFAULT_DATE_FORMAT = "dd-MMM-yyyy";
+    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 }

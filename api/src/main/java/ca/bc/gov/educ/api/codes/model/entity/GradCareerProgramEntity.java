@@ -1,5 +1,7 @@
 package ca.bc.gov.educ.api.codes.model.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,14 +16,19 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Immutable
 @Entity
-@Table(name = "GRAD_CERTIFICATE_TYPES")
-public class GradCertificateTypesEntity extends BaseEntity {
+@Table(name = "GRAD_CAREER_PROGRAM")
+public class GradCareerProgramEntity extends BaseEntity {
    
 	@Id
 	@Column(name = "CODE", nullable = false)
     private String code; 
 	
 	@Column(name = "DESCRIPTION", nullable = true)
-    private String description;	
+    private String description; 
+
+	@Column(name = "START_DT", nullable = true)
+    private Date startDate; 
 	
+	@Column(name = "END_DT", nullable = true)
+    private Date endDate;	
 }
