@@ -5,12 +5,19 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import ca.bc.gov.educ.api.codes.model.dto.GradCareerProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
@@ -52,6 +59,9 @@ import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
 import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradStatusCodesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
+import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
+import ca.bc.gov.educ.api.codes.util.EducGradCodeApiUtils;
+import ca.bc.gov.educ.api.codes.util.GradValidation;
 
 @Service
 public class CodeService {
@@ -115,6 +125,18 @@ public class CodeService {
 
 	@Autowired
 	private GradRequirementTypesTransformer gradRequirementTypesTransformer;
+	
+	@Autowired
+	GradValidation validation;
+	
+	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STATUS_BY_CERTIFICATE_TYPE_CODE_URL)
+    private String getGradStatusByCertificateTypeCodeURL;  
+	
+	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_UNGRAD_REASON_BY_UNGRAD_REASON_CODE_URL)
+    private String getStudentUngradReasonByUngradReasonCodeURL;
+    
+    @Autowired
+    RestTemplate restTemplate;
 
 	private static Logger logger = LoggerFactory.getLogger(CodeService.class);
 
@@ -345,6 +367,81 @@ public class CodeService {
 			return gradRequirementTypesTransformer.transformToDTO(entity.get());
 		} else {
 			return null;
+		}
+	}
+
+	public GradUngradReasons createGradUngradReasons(@Valid GradUngradReasons gradUngradReasons) {
+		GradUngradReasonsEntity toBeSavedObject = gradUngradReasonsTransformer.transformToEntity(gradUngradReasons);
+		Optional<GradUngradReasonsEntity> existingObjectCheck = gradUngradReasonsRepository.findById(gradUngradReasons.getCode());
+		if(existingObjectCheck.isPresent()) {
+			validation.addErrorAndStop(String.format("Reason Code [%s] already exists",gradUngradReasons.getCode()));
+			return gradUngradReasons;			
+		}else {
+			return gradUngradReasonsTransformer.transformToDTO(gradUngradReasonsRepository.save(toBeSavedObject));
+		}	
+	}
+
+	public GradUngradReasons updateGradUngradReasons(@Valid GradUngradReasons gradUngradReasons) {
+		Optional<GradUngradReasonsEntity> gradUngradReasonOptional = gradUngradReasonsRepository.findById(gradUngradReasons.getCode());
+		GradUngradReasonsEntity sourceObject = gradUngradReasonsTransformer.transformToEntity(gradUngradReasons);
+		if(gradUngradReasonOptional.isPresent()) {
+			GradUngradReasonsEntity gradEnity = gradUngradReasonOptional.get();			
+			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+    		return gradUngradReasonsTransformer.transformToDTO(gradUngradReasonsRepository.save(gradEnity));
+		}else {
+			validation.addErrorAndStop(String.format("Reason Code [%s] does not exists",gradUngradReasons.getCode()));
+			return gradUngradReasons;
+		}
+	}
+
+	public int deleteGradUngradReasons(@Valid String reasonCode,String accessToken) {
+		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
+		Boolean isPresent = restTemplate.exchange(String.format(getStudentUngradReasonByUngradReasonCodeURL,reasonCode), HttpMethod.GET,
+				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		if(isPresent) {
+			validation.addErrorAndStop(String.format("This Ungrad Reason [%s] cannot be deleted as some students have this reason associated with them.",reasonCode));
+			return 0;
+		}else {
+			gradUngradReasonsRepository.deleteById(reasonCode);
+			return 1;
+		}
+		
+	}
+	
+	public GradCertificateTypes createGradCertificateTypes(@Valid GradCertificateTypes gradCertificateTypes) {
+		GradCertificateTypesEntity toBeSavedObject = gradCertificateTypesTransformer.transformToEntity(gradCertificateTypes);
+		Optional<GradCertificateTypesEntity> existingObjectCheck = gradCertificateTypesRepository.findById(gradCertificateTypes.getCode());
+		if(existingObjectCheck.isPresent()) {
+			validation.addErrorAndStop(String.format("Certificate Type [%s] already exists",gradCertificateTypes.getCode()));
+			return gradCertificateTypes;			
+		}else {
+			return gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.save(toBeSavedObject));
+		}	
+	}
+
+	public GradCertificateTypes updateGradCertificateTypes(@Valid GradCertificateTypes gradCertificateTypes) {
+		Optional<GradCertificateTypesEntity> gradCertificateTypesOptional = gradCertificateTypesRepository.findById(gradCertificateTypes.getCode());
+		GradCertificateTypesEntity sourceObject = gradCertificateTypesTransformer.transformToEntity(gradCertificateTypes);
+		if(gradCertificateTypesOptional.isPresent()) {
+			GradCertificateTypesEntity gradEnity = gradCertificateTypesOptional.get();			
+			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+    		return gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.save(gradEnity));
+		}else {
+			validation.addErrorAndStop(String.format("Certificate Type [%s] does not exists",gradCertificateTypes.getCode()));
+			return gradCertificateTypes;
+		}
+	}
+
+	public int deleteGradCertificateTypes(@Valid String certificateType,String accessToken) {
+		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
+		Boolean isPresent = restTemplate.exchange(String.format(getGradStatusByCertificateTypeCodeURL,certificateType), HttpMethod.GET,
+				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		if(isPresent) {
+			validation.addErrorAndStop(String.format("This Certificate Type [%s] cannot be deleted as some students have this type associated with them.",certificateType));
+			return 0;
+		}else {
+			gradCertificateTypesRepository.deleteById(certificateType);
+			return 1;
 		}
 	}
 }

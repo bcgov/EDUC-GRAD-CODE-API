@@ -2,15 +2,24 @@ package ca.bc.gov.educ.api.codes.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +34,7 @@ import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradStatusCodes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.service.CodeService;
+import ca.bc.gov.educ.api.codes.util.ApiResponseModel;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
 import ca.bc.gov.educ.api.codes.util.GradValidation;
 import ca.bc.gov.educ.api.codes.util.PermissionsContants;
@@ -68,7 +78,7 @@ public class CodeController {
     	}else {
     		return response.NOT_FOUND();
     	}
-    }
+    }    
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_COUNTRY_MAPPING)
     @PreAuthorize(PermissionsContants.READ_GRAD_COUNTRY)
@@ -128,6 +138,46 @@ public class CodeController {
         
     }
     
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_UNGRAD_MAPPING)
+    @PreAuthorize(PermissionsContants.CREATE_UNGRAD_REASON)
+    public ResponseEntity<ApiResponseModel<GradUngradReasons>> createGradUngradReasons(@Valid @RequestBody GradUngradReasons gradUngradReasons) { 
+    	logger.debug("createGradUngradReasons : ");
+    	validation.requiredField(gradUngradReasons.getCode(), "Reason Code");
+    	validation.requiredField(gradUngradReasons.getDescription(), "Reason Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return response.CREATED(codeService.createGradUngradReasons(gradUngradReasons));
+    }
+    
+    @PutMapping(EducGradCodeApiConstants.GET_ALL_UNGRAD_MAPPING)
+    @PreAuthorize(PermissionsContants.UPDATE_UNGRAD_REASON)
+    public ResponseEntity<ApiResponseModel<GradUngradReasons>> updateGradUngradReasons(@Valid @RequestBody GradUngradReasons gradUngradReasons) { 
+    	logger.info("updateGradUngradReasons : ");
+    	validation.requiredField(gradUngradReasons.getCode(), "Reason Code");
+    	validation.requiredField(gradUngradReasons.getDescription(), "Reason Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	return response.UPDATED(codeService.updateGradUngradReasons(gradUngradReasons));
+    }
+    
+    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_UNGRAD_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.DELETE_UNGRAD_REASON)
+    public ResponseEntity<Void> deleteGradUngradReasons(@Valid @PathVariable String reasonCode) { 
+    	logger.debug("deleteGradUngradReasons : ");
+    	validation.requiredField(reasonCode, "Reason Code");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
+    	String accessToken = auth.getTokenValue();
+        return response.DELETE(codeService.deleteGradUngradReasons(reasonCode,accessToken));
+    }
+    
     @GetMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_MAPPING)
     @PreAuthorize(PermissionsContants.READ_GRAD_CERTIFICATE)
     public ResponseEntity<List<GradCertificateTypes>> getAllCertificateTypeCodeList() { 
@@ -145,6 +195,46 @@ public class CodeController {
     	}else {
     		return response.NOT_FOUND();
     	}
+    }
+    
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_MAPPING)
+    @PreAuthorize(PermissionsContants.CREATE_CERTIFICATE_TYPE)
+    public ResponseEntity<ApiResponseModel<GradCertificateTypes>> createGradCertificateTypes(@Valid @RequestBody GradCertificateTypes gradCertificateTypes) { 
+    	logger.debug("createGradCertificateTypes : ");
+    	validation.requiredField(gradCertificateTypes.getCode(), "Certificate Type Code");
+    	validation.requiredField(gradCertificateTypes.getDescription(), "Certificate Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return response.CREATED(codeService.createGradCertificateTypes(gradCertificateTypes));
+    }
+    
+    @PutMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_MAPPING)
+    @PreAuthorize(PermissionsContants.UPDATE_CERTIFICATE_TYPE)
+    public ResponseEntity<ApiResponseModel<GradCertificateTypes>> updateGradCertificateTypes(@Valid @RequestBody GradCertificateTypes gradCertificateTypes) { 
+    	logger.info("updateGradCertificateTypes : ");
+    	validation.requiredField(gradCertificateTypes.getCode(), "Certificate Type Code");
+    	validation.requiredField(gradCertificateTypes.getDescription(), "Certificate Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	return response.UPDATED(codeService.updateGradCertificateTypes(gradCertificateTypes));
+    }
+    
+    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.DELETE_CERTIFICATE_TYPE)
+    public ResponseEntity<Void> deleteGradCertificateTypes(@Valid @PathVariable String certTypeCode) { 
+    	logger.debug("deleteGradCertificateTypes : ");
+    	validation.requiredField(certTypeCode, "Certificate Type Code");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
+    	String accessToken = auth.getTokenValue();
+        return response.DELETE(codeService.deleteGradCertificateTypes(certTypeCode,accessToken));
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_MESSAGING_MAPPING)
