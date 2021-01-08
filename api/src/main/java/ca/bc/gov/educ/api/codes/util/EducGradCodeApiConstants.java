@@ -51,4 +51,5 @@ public class EducGradCodeApiConstants {
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
 	public static final String ENDPOINT_GRAD_STATUS_BY_CERTIFICATE_TYPE_CODE_URL = "${endpoint.grad-graduation-status-api.grad_list_by_certificate_code.url}";
 	public static final String ENDPOINT_STUDENT_UNGRAD_REASON_BY_UNGRAD_REASON_CODE_URL = "${endpoint.grad-common-api.student_ungrad_list_by_ungrad_reason_code.url}";
+	public static final String ENDPOINT_STUDENT_CAREER_PROGRAM_BY_CAREER_PROGRAM_CODE_URL = "${endpoint.grad-common-api.student_career_program_list_by_career_program_code.url}";
 }

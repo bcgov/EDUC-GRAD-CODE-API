@@ -27,7 +27,6 @@ import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
-import ca.bc.gov.educ.api.codes.model.dto.GradStatusCodes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.model.entity.GradCareerProgramEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradCertificateTypesEntity;
@@ -37,7 +36,6 @@ import ca.bc.gov.educ.api.codes.model.entity.GradProgramEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradProgramTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradProvinceEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradRequirementTypesEntity;
-import ca.bc.gov.educ.api.codes.model.entity.GradStatusCodesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradUngradReasonsEntity;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCareerProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransformer;
@@ -47,7 +45,6 @@ import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradRequirementTypesTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradStatusCodesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
 import ca.bc.gov.educ.api.codes.repository.GradCareerProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
@@ -57,7 +54,6 @@ import ca.bc.gov.educ.api.codes.repository.GradProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProgramTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
 import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
-import ca.bc.gov.educ.api.codes.repository.GradStatusCodesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiUtils;
@@ -109,12 +105,6 @@ public class CodeService {
 	private GradCareerProgramTransformer gradCareerProgramTransformer;
 
 	@Autowired
-	private GradStatusCodesRepository gradStatusCodesRepository;
-
-	@Autowired
-	private GradStatusCodesTransformer gradStatusCodesTransformer;
-
-	@Autowired
 	private GradProgramTypesRepository gradProgramTypesRepository;
 
 	@Autowired
@@ -134,6 +124,9 @@ public class CodeService {
 	
 	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_UNGRAD_REASON_BY_UNGRAD_REASON_CODE_URL)
     private String getStudentUngradReasonByUngradReasonCodeURL;
+	
+	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_CAREER_PROGRAM_BY_CAREER_PROGRAM_CODE_URL)
+    private String getStudentCareerProgramByCareerProgramCodeURL; 
     
     @Autowired
     RestTemplate restTemplate;
@@ -302,29 +295,6 @@ public class CodeService {
 	}
 
 	@Transactional
-	public List<GradStatusCodes> getAllGradStatusCodeList() {
-		List<GradStatusCodes> gradStatusCodesList = new ArrayList<GradStatusCodes>();
-		try {
-			gradStatusCodesList = gradStatusCodesTransformer.transformToDTO(gradStatusCodesRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradStatusCodesList;
-	}
-
-	@Transactional
-	public GradStatusCodes getSpecificGradStatusCode(String statusCode) {
-		Optional<GradStatusCodesEntity> entity = gradStatusCodesRepository
-				.findById(StringUtils.toRootUpperCase(statusCode));
-		if (entity.isPresent()) {
-			return gradStatusCodesTransformer.transformToDTO(entity.get());
-		} else {
-			return null;
-		}
-	}
-
-	@Transactional
 	public List<GradProgramTypes> getAllProgramTypeCodeList() {
 		List<GradProgramTypes> gradProgramTypesList = new ArrayList<GradProgramTypes>();
 		try {
@@ -441,6 +411,43 @@ public class CodeService {
 			return 0;
 		}else {
 			gradCertificateTypesRepository.deleteById(certificateType);
+			return 1;
+		}
+	}
+
+	public GradCareerProgram createGradCareerProgram(@Valid GradCareerProgram gradCareerProgram) {
+		GradCareerProgramEntity toBeSavedObject = gradCareerProgramTransformer.transformToEntity(gradCareerProgram);
+		Optional<GradCareerProgramEntity> existingObjectCheck = gradCareerProgramRepository.findById(gradCareerProgram.getCode());
+		if(existingObjectCheck.isPresent()) {
+			validation.addErrorAndStop(String.format("Career Program [%s] already exists",gradCareerProgram.getCode()));
+			return gradCareerProgram;			
+		}else {
+			return gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.save(toBeSavedObject));
+		}
+	}
+
+	public GradCareerProgram updateGradCareerProgram(@Valid GradCareerProgram gradCareerProgram) {
+		Optional<GradCareerProgramEntity> gradCareerProgramOptional = gradCareerProgramRepository.findById(gradCareerProgram.getCode());
+		GradCareerProgramEntity sourceObject = gradCareerProgramTransformer.transformToEntity(gradCareerProgram);
+		if(gradCareerProgramOptional.isPresent()) {
+			GradCareerProgramEntity gradEnity = gradCareerProgramOptional.get();			
+			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+    		return gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.save(gradEnity));
+		}else {
+			validation.addErrorAndStop(String.format("Career Program [%s] does not exists",gradCareerProgram.getCode()));
+			return gradCareerProgram;
+		}
+	}
+
+	public int deleteGradCareerProgram(@Valid String cpCode, String accessToken) {
+		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
+		Boolean isPresent = restTemplate.exchange(String.format(getStudentCareerProgramByCareerProgramCodeURL,cpCode), HttpMethod.GET,
+				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		if(isPresent) {
+			validation.addErrorAndStop(String.format("This Career Program [%s] cannot be deleted as some students have this code associated with them.",cpCode));
+			return 0;
+		}else {
+			gradCareerProgramRepository.deleteById(cpCode);
 			return 1;
 		}
 	}

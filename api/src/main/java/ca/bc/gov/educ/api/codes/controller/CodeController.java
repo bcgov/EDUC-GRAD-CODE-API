@@ -31,7 +31,6 @@ import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
-import ca.bc.gov.educ.api.codes.model.dto.GradStatusCodes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.service.CodeService;
 import ca.bc.gov.educ.api.codes.util.ApiResponseModel;
@@ -275,23 +274,44 @@ public class CodeController {
     	}
     }
     
-    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_STATUS_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.READ_GRAD_STATUS_CODE)
-    public ResponseEntity<List<GradStatusCodes>> getAllStatusCodeList() { 
-    	logger.debug("getAllStatusCodeList : ");
-        return response.GET(codeService.getAllGradStatusCodeList());
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_MAPPING)
+    @PreAuthorize(PermissionsContants.CREATE_CAREER_PROGRAM)
+    public ResponseEntity<ApiResponseModel<GradCareerProgram>> createGradCareerProgram(@Valid @RequestBody GradCareerProgram gradCareerProgram) { 
+    	logger.debug("createGradCareerProgram : ");
+    	validation.requiredField(gradCareerProgram.getCode(), "Career Program Code");
+    	validation.requiredField(gradCareerProgram.getDescription(), "Career Program Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return response.CREATED(codeService.createGradCareerProgram(gradCareerProgram));
     }
     
-    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_STATUS_CODE_BY_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.READ_GRAD_STATUS_CODE)
-    public ResponseEntity<GradStatusCodes> getSpecificStatusCode(@PathVariable String statusCode) { 
-    	logger.debug("getSpecificStatusCode : ");
-    	GradStatusCodes gradResponse = codeService.getSpecificGradStatusCode(statusCode);
-    	if(gradResponse != null) {
-    		return response.GET(gradResponse);
-    	}else {
-    		return response.NOT_FOUND();
+    @PutMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_MAPPING)
+    @PreAuthorize(PermissionsContants.UPDATE_CAREER_PROGRAM)
+    public ResponseEntity<ApiResponseModel<GradCareerProgram>> updateGradCareerProgram(@Valid @RequestBody GradCareerProgram gradCareerProgram) { 
+    	logger.info("updateGradCareerProgram : ");
+    	validation.requiredField(gradCareerProgram.getCode(), "Career Program Code");
+    	validation.requiredField(gradCareerProgram.getDescription(), "Career Program Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
+    	return response.UPDATED(codeService.updateGradCareerProgram(gradCareerProgram));
+    }
+    
+    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.DELETE_CAREER_PROGRAM)
+    public ResponseEntity<Void> deleteGradCareerProgram(@Valid @PathVariable String cpCode) { 
+    	logger.debug("deleteGradCareerProgram : ");
+    	validation.requiredField(cpCode, "Career Program Code");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
+    	String accessToken = auth.getTokenValue();
+        return response.DELETE(codeService.deleteGradCareerProgram(cpCode,accessToken));
     }
     
     @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING)
