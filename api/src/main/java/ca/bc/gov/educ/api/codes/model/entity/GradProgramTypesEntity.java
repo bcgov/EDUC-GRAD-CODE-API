@@ -12,7 +12,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Immutable
 @Entity
 @Table(name = "GRAD_PROGRAM_TYPE")
 public class GradProgramTypesEntity extends BaseEntity {
