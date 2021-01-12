@@ -127,6 +127,14 @@ public class CodeService {
 	
 	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_CAREER_PROGRAM_BY_CAREER_PROGRAM_CODE_URL)
     private String getStudentCareerProgramByCareerProgramCodeURL; 
+	
+	@Value(EducGradCodeApiConstants.ENDPOINT_PROGRAM_TYPE_BY_PROGRAM_TYPE_CODE_URL)
+    private String getProgramTypeByProgramTypeCodeURL; 
+	
+	@Value(EducGradCodeApiConstants.ENDPOINT_REQUIREMENT_TYPE_BY_REQUIREMENT_TYPE_CODE_URL)
+    private String getRequirementTypeByRequirementTypeCodeURL; 
+	
+	
     
     @Autowired
     RestTemplate restTemplate;
@@ -448,6 +456,80 @@ public class CodeService {
 			return 0;
 		}else {
 			gradCareerProgramRepository.deleteById(cpCode);
+			return 1;
+		}
+	}
+	
+	public GradProgramTypes createGradProgramTypes(@Valid GradProgramTypes gradProgramTypes) {
+		GradProgramTypesEntity toBeSavedObject = gradProgramTypesTransformer.transformToEntity(gradProgramTypes);
+		Optional<GradProgramTypesEntity> existingObjectCheck = gradProgramTypesRepository.findById(gradProgramTypes.getCode());
+		if(existingObjectCheck.isPresent()) {
+			validation.addErrorAndStop(String.format("Program Type [%s] already exists",gradProgramTypes.getCode()));
+			return gradProgramTypes;			
+		}else {
+			return gradProgramTypesTransformer.transformToDTO(gradProgramTypesRepository.save(toBeSavedObject));
+		}
+	}
+
+	public GradProgramTypes updateGradProgramTypes(@Valid GradProgramTypes gradProgramTypes) {
+		Optional<GradProgramTypesEntity> gradProgramTypesOptional = gradProgramTypesRepository.findById(gradProgramTypes.getCode());
+		GradProgramTypesEntity sourceObject = gradProgramTypesTransformer.transformToEntity(gradProgramTypes);
+		if(gradProgramTypesOptional.isPresent()) {
+			GradProgramTypesEntity gradEnity = gradProgramTypesOptional.get();			
+			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+    		return gradProgramTypesTransformer.transformToDTO(gradProgramTypesRepository.save(gradEnity));
+		}else {
+			validation.addErrorAndStop(String.format("Program Type [%s] does not exists",gradProgramTypes.getCode()));
+			return gradProgramTypes;
+		}
+	}
+
+	public int deleteGradProgramTypes(@Valid String programType, String accessToken) {
+		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
+		Boolean isPresent = restTemplate.exchange(String.format(getProgramTypeByProgramTypeCodeURL,programType), HttpMethod.GET,
+				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		if(isPresent) {
+			validation.addErrorAndStop(String.format("This Program Type [%s] cannot be deleted as some programs are of this type.",programType));
+			return 0;
+		}else {
+			gradProgramTypesRepository.deleteById(programType);
+			return 1;
+		}
+	}
+	
+	public GradRequirementTypes createGradRequirementTypes(@Valid GradRequirementTypes gradRequirementTypes) {
+		GradRequirementTypesEntity toBeSavedObject = gradRequirementTypesTransformer.transformToEntity(gradRequirementTypes);
+		Optional<GradRequirementTypesEntity> existingObjectCheck = gradRequirementTypesRepository.findById(gradRequirementTypes.getCode());
+		if(existingObjectCheck.isPresent()) {
+			validation.addErrorAndStop(String.format("Requirement Type [%s] already exists",gradRequirementTypes.getCode()));
+			return gradRequirementTypes;			
+		}else {
+			return gradRequirementTypesTransformer.transformToDTO(gradRequirementTypesRepository.save(toBeSavedObject));
+		}
+	}
+
+	public GradRequirementTypes updateGradRequirementTypes(@Valid GradRequirementTypes gradRequirementTypes) {
+		Optional<GradRequirementTypesEntity> gradRequirementTypesOptional = gradRequirementTypesRepository.findById(gradRequirementTypes.getCode());
+		GradRequirementTypesEntity sourceObject = gradRequirementTypesTransformer.transformToEntity(gradRequirementTypes);
+		if(gradRequirementTypesOptional.isPresent()) {
+			GradRequirementTypesEntity gradEnity = gradRequirementTypesOptional.get();			
+			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+    		return gradRequirementTypesTransformer.transformToDTO(gradRequirementTypesRepository.save(gradEnity));
+		}else {
+			validation.addErrorAndStop(String.format("Requirement Type [%s] does not exists",gradRequirementTypes.getCode()));
+			return gradRequirementTypes;
+		}
+	}
+
+	public int deleteGradRequirementTypes(@Valid String programType, String accessToken) {
+		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
+		Boolean isPresent = restTemplate.exchange(String.format(getRequirementTypeByRequirementTypeCodeURL,programType), HttpMethod.GET,
+				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		if(isPresent) {
+			validation.addErrorAndStop(String.format("This Requirement Type [%s] cannot be deleted as some rules are of this type.",programType));
+			return 0;
+		}else {
+			gradRequirementTypesRepository.deleteById(programType);
 			return 1;
 		}
 	}

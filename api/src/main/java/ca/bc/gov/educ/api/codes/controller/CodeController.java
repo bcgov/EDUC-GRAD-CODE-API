@@ -333,6 +333,46 @@ public class CodeController {
     	}
     }
     
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.CREATE_PROGRAM_TYPE)
+    public ResponseEntity<ApiResponseModel<GradProgramTypes>> createGradProgramType(@Valid @RequestBody GradProgramTypes gradProgramTypes) { 
+    	logger.debug("createGradProgramTypes : ");
+    	validation.requiredField(gradProgramTypes.getCode(), "Program Type Code");
+    	validation.requiredField(gradProgramTypes.getDescription(), "Program Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return response.CREATED(codeService.createGradProgramTypes(gradProgramTypes));
+    }
+    
+    @PutMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.UPDATE_PROGRAM_TYPE)
+    public ResponseEntity<ApiResponseModel<GradProgramTypes>> updateGradProgramTypes(@Valid @RequestBody GradProgramTypes gradProgramTypes) { 
+    	logger.info("updateGradProgramTypes : ");
+    	validation.requiredField(gradProgramTypes.getCode(), "Program Type Code");
+    	validation.requiredField(gradProgramTypes.getDescription(), "Program Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	return response.UPDATED(codeService.updateGradProgramTypes(gradProgramTypes));
+    }
+    
+    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.DELETE_PROGRAM_TYPE)
+    public ResponseEntity<Void> deleteGradProgramTypes(@Valid @PathVariable String typeCode) { 
+    	logger.debug("deleteGradProgramTypes : ");
+    	validation.requiredField(typeCode, "Program Type Code");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
+    	String accessToken = auth.getTokenValue();
+        return response.DELETE(codeService.deleteGradProgramTypes(typeCode,accessToken));
+    }
+    
     @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING)
     @PreAuthorize(PermissionsContants.READ_GRAD_REQUIREMENT_TYPE_CODE)
     public ResponseEntity<List<GradRequirementTypes>> getAllRequirementTypeCodeList() { 
@@ -350,5 +390,45 @@ public class CodeController {
     	}else {
     		return response.NOT_FOUND();
     	}
+    }
+    
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.CREATE_REQUIREMENT_TYPE)
+    public ResponseEntity<ApiResponseModel<GradRequirementTypes>> createGradRequirementTypes(@Valid @RequestBody GradRequirementTypes gradRequirementTypes) { 
+    	logger.debug("creatGradRequirementTypess : ");
+    	validation.requiredField(gradRequirementTypes.getCode(), "Requirement Type Code");
+    	validation.requiredField(gradRequirementTypes.getDescription(), "Requirement Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return response.CREATED(codeService.createGradRequirementTypes(gradRequirementTypes));
+    }
+    
+    @PutMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.UPDATE_REQUIREMENT_TYPE)
+    public ResponseEntity<ApiResponseModel<GradRequirementTypes>> updateGradRequirementTypes(@Valid @RequestBody GradRequirementTypes gradRequirementTypes) { 
+    	logger.info("updateGradRequirementTypes : ");
+    	validation.requiredField(gradRequirementTypes.getCode(), "Requirement Type Code");
+    	validation.requiredField(gradRequirementTypes.getDescription(), "Requirement Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	return response.UPDATED(codeService.updateGradRequirementTypes(gradRequirementTypes));
+    }
+    
+    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.DELETE_REQUIREMENT_TYPE)
+    public ResponseEntity<Void> deleteGradRequirementTypes(@Valid @PathVariable String typeCode) { 
+    	logger.debug("deleteGradRequirementTypes : ");
+    	validation.requiredField(typeCode, "Requirement Type Code");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
+    	String accessToken = auth.getTokenValue();
+        return response.DELETE(codeService.deleteGradRequirementTypes(typeCode,accessToken));
     }
 }
