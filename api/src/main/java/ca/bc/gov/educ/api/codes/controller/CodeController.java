@@ -45,7 +45,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping(EducGradCodeApiConstants.GRAD_CODE_API_ROOT_MAPPING)
 @EnableResourceServer
-@CrossOrigin(origins =  "http://educ-grad-admin-master-wbmfsf-dev.pathfinder.gov.bc.ca")
+@CrossOrigin
 @OpenAPIDefinition(info = @Info(title = "API for Code Data.", description = "This Read API is for Reading Code data.", version = "1"), security = {@SecurityRequirement(name = "OAUTH2", scopes = {"READ_GRAD_COUNTRY_CODE_DATA","READ_GRAD_PROVINCE_CODE_DATA","READ_GRAD_PROGRAM_CODE_DATA","READ_GRAD_UNGRAD_CODE_DATA","READ_GRAD_CERTIFICATE_CODE_DATA","READ_GRAD_MESSEGING_CODE_DATA","READ_GRAD_CAREER_PROGRAM_CODE_DATA"})})
 public class CodeController {
 
