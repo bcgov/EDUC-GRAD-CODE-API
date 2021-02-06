@@ -15,10 +15,10 @@ import lombok.EqualsAndHashCode;
 public class GradCertificateTypesEntity extends BaseEntity {
    
 	@Id
-	@Column(name = "CODE", nullable = false)
+	@Column(name = "CERTIFICATE_CODE", nullable = false)
     private String code; 
 	
-	@Column(name = "DESCRIPTION", nullable = true)
+	@Column(name = "CERTIFICATE_DESCRIPTION", nullable = true)
     private String description;	
 	
 }
