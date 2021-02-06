@@ -24,8 +24,8 @@ import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
-import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
+import ca.bc.gov.educ.api.codes.model.dto.GradReportTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.model.entity.GradCareerProgramEntity;
@@ -33,8 +33,8 @@ import ca.bc.gov.educ.api.codes.model.entity.GradCertificateTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradCountryEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradMessagingEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradProgramEntity;
-import ca.bc.gov.educ.api.codes.model.entity.GradProgramTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradProvinceEntity;
+import ca.bc.gov.educ.api.codes.model.entity.GradReportTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradRequirementTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradUngradReasonsEntity;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCareerProgramTransformer;
@@ -42,8 +42,8 @@ import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransforme
 import ca.bc.gov.educ.api.codes.model.transformer.GradCountryTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradMessagingTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
+import ca.bc.gov.educ.api.codes.model.transformer.GradReportTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradRequirementTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
 import ca.bc.gov.educ.api.codes.repository.GradCareerProgramRepository;
@@ -51,8 +51,8 @@ import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCountryRepository;
 import ca.bc.gov.educ.api.codes.repository.GradMessagingRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProgramRepository;
-import ca.bc.gov.educ.api.codes.repository.GradProgramTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
+import ca.bc.gov.educ.api.codes.repository.GradReportTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
@@ -103,12 +103,6 @@ public class CodeService {
 
 	@Autowired
 	private GradCareerProgramTransformer gradCareerProgramTransformer;
-
-	@Autowired
-	private GradProgramTypesRepository gradProgramTypesRepository;
-
-	@Autowired
-	private GradProgramTypesTransformer gradProgramTypesTransformer;
 	
 	@Autowired
 	private GradRequirementTypesRepository gradRequirementTypesRepository;
@@ -117,19 +111,25 @@ public class CodeService {
 	private GradRequirementTypesTransformer gradRequirementTypesTransformer;
 	
 	@Autowired
+	private GradReportTypesRepository gradReportTypesRepository;
+
+	@Autowired
+	private GradReportTypesTransformer gradReportTypesTransformer;
+	
+	@Autowired
 	GradValidation validation;
 	
-	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STATUS_BY_CERTIFICATE_TYPE_CODE_URL)
-    private String getGradStatusByCertificateTypeCodeURL;  
+	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STUDENT_CERTIFICATE_BY_CERTIFICATE_TYPE_CODE_URL)
+    private String getStudentCertificateByCertificateTypeCodeURL;  
+	
+	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STUDENT_REPORT_BY_REPORT_TYPE_CODE_URL)
+    private String getStudentReportByReportTypeCodeURL; 	
 	
 	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_UNGRAD_REASON_BY_UNGRAD_REASON_CODE_URL)
     private String getStudentUngradReasonByUngradReasonCodeURL;
 	
 	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_CAREER_PROGRAM_BY_CAREER_PROGRAM_CODE_URL)
-    private String getStudentCareerProgramByCareerProgramCodeURL; 
-	
-	@Value(EducGradCodeApiConstants.ENDPOINT_PROGRAM_TYPE_BY_PROGRAM_TYPE_CODE_URL)
-    private String getProgramTypeByProgramTypeCodeURL; 
+    private String getStudentCareerProgramByCareerProgramCodeURL;
 	
 	@Value(EducGradCodeApiConstants.ENDPOINT_REQUIREMENT_TYPE_BY_REQUIREMENT_TYPE_CODE_URL)
     private String getRequirementTypeByRequirementTypeCodeURL; 
@@ -303,29 +303,6 @@ public class CodeService {
 	}
 
 	@Transactional
-	public List<GradProgramTypes> getAllProgramTypeCodeList() {
-		List<GradProgramTypes> gradProgramTypesList = new ArrayList<GradProgramTypes>();
-		try {
-			gradProgramTypesList = gradProgramTypesTransformer.transformToDTO(gradProgramTypesRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradProgramTypesList;
-	}
-
-	@Transactional
-	public GradProgramTypes getSpecificProgramTypeCode(String typeCode) {
-		Optional<GradProgramTypesEntity> entity = gradProgramTypesRepository
-				.findById(StringUtils.toRootUpperCase(typeCode));
-		if (entity.isPresent()) {
-			return gradProgramTypesTransformer.transformToDTO(entity.get());
-		} else {
-			return null;
-		}
-	}
-	
-	@Transactional
 	public List<GradRequirementTypes> getAllRequirementTypeCodeList() {
 		List<GradRequirementTypes> gradRequirementTypesList = new ArrayList<GradRequirementTypes>();
 		try {
@@ -412,7 +389,7 @@ public class CodeService {
 
 	public int deleteGradCertificateTypes(@Valid String certificateType,String accessToken) {
 		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
-		Boolean isPresent = restTemplate.exchange(String.format(getGradStatusByCertificateTypeCodeURL,certificateType), HttpMethod.GET,
+		Boolean isPresent = restTemplate.exchange(String.format(getStudentCertificateByCertificateTypeCodeURL,certificateType), HttpMethod.GET,
 				new HttpEntity<>(httpHeaders), boolean.class).getBody();
 		if(isPresent) {
 			validation.addErrorAndStop(String.format("This Certificate Type [%s] cannot be deleted as some students have this type associated with them.",certificateType));
@@ -458,44 +435,7 @@ public class CodeService {
 			gradCareerProgramRepository.deleteById(cpCode);
 			return 1;
 		}
-	}
-	
-	public GradProgramTypes createGradProgramTypes(@Valid GradProgramTypes gradProgramTypes) {
-		GradProgramTypesEntity toBeSavedObject = gradProgramTypesTransformer.transformToEntity(gradProgramTypes);
-		Optional<GradProgramTypesEntity> existingObjectCheck = gradProgramTypesRepository.findById(gradProgramTypes.getCode());
-		if(existingObjectCheck.isPresent()) {
-			validation.addErrorAndStop(String.format("Program Type [%s] already exists",gradProgramTypes.getCode()));
-			return gradProgramTypes;			
-		}else {
-			return gradProgramTypesTransformer.transformToDTO(gradProgramTypesRepository.save(toBeSavedObject));
-		}
-	}
-
-	public GradProgramTypes updateGradProgramTypes(@Valid GradProgramTypes gradProgramTypes) {
-		Optional<GradProgramTypesEntity> gradProgramTypesOptional = gradProgramTypesRepository.findById(gradProgramTypes.getCode());
-		GradProgramTypesEntity sourceObject = gradProgramTypesTransformer.transformToEntity(gradProgramTypes);
-		if(gradProgramTypesOptional.isPresent()) {
-			GradProgramTypesEntity gradEnity = gradProgramTypesOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
-    		return gradProgramTypesTransformer.transformToDTO(gradProgramTypesRepository.save(gradEnity));
-		}else {
-			validation.addErrorAndStop(String.format("Program Type [%s] does not exists",gradProgramTypes.getCode()));
-			return gradProgramTypes;
-		}
-	}
-
-	public int deleteGradProgramTypes(@Valid String programType, String accessToken) {
-		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
-		Boolean isPresent = restTemplate.exchange(String.format(getProgramTypeByProgramTypeCodeURL,programType), HttpMethod.GET,
-				new HttpEntity<>(httpHeaders), boolean.class).getBody();
-		if(isPresent) {
-			validation.addErrorAndStop(String.format("This Program Type [%s] cannot be deleted as some programs are of this type.",programType));
-			return 0;
-		}else {
-			gradProgramTypesRepository.deleteById(programType);
-			return 1;
-		}
-	}
+	}	
 	
 	public GradRequirementTypes createGradRequirementTypes(@Valid GradRequirementTypes gradRequirementTypes) {
 		GradRequirementTypesEntity toBeSavedObject = gradRequirementTypesTransformer.transformToEntity(gradRequirementTypes);
@@ -530,6 +470,66 @@ public class CodeService {
 			return 0;
 		}else {
 			gradRequirementTypesRepository.deleteById(programType);
+			return 1;
+		}
+	}
+	
+	@Transactional
+	public List<GradReportTypes> getAllReportTypeCodeList() {
+		List<GradReportTypes> gradReportTypeList = new ArrayList<GradReportTypes>();
+		try {
+			gradReportTypeList = gradReportTypesTransformer
+					.transformToDTO(gradReportTypesRepository.findAll());
+		} catch (Exception e) {
+			logger.debug("Exception:" + e);
+		}
+
+		return gradReportTypeList;
+	}
+
+	@Transactional
+	public GradReportTypes getSpecificReportTypeCode(String provCode) {
+		Optional<GradReportTypesEntity> entity = gradReportTypesRepository.findById(StringUtils.toRootUpperCase(provCode));
+		if (entity.isPresent()) {
+			return gradReportTypesTransformer.transformToDTO(entity);
+		} else {
+			return null;
+		}
+	}
+	
+	public GradReportTypes createGradReportTypes(@Valid GradReportTypes gradReportTypes) {
+		GradReportTypesEntity toBeSavedObject = gradReportTypesTransformer.transformToEntity(gradReportTypes);
+		Optional<GradReportTypesEntity> existingObjectCheck = gradReportTypesRepository.findById(gradReportTypes.getCode());
+		if(existingObjectCheck.isPresent()) {
+			validation.addErrorAndStop(String.format("Report Type [%s] already exists",gradReportTypes.getCode()));
+			return gradReportTypes;			
+		}else {
+			return gradReportTypesTransformer.transformToDTO(gradReportTypesRepository.save(toBeSavedObject));
+		}	
+	}
+
+	public GradReportTypes updateGradReportTypes(@Valid GradReportTypes gradReportTypes) {
+		Optional<GradReportTypesEntity> gradReportTypesOptional = gradReportTypesRepository.findById(gradReportTypes.getCode());
+		GradReportTypesEntity sourceObject = gradReportTypesTransformer.transformToEntity(gradReportTypes);
+		if(gradReportTypesOptional.isPresent()) {
+			GradReportTypesEntity gradEnity = gradReportTypesOptional.get();			
+			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+    		return gradReportTypesTransformer.transformToDTO(gradReportTypesRepository.save(gradEnity));
+		}else {
+			validation.addErrorAndStop(String.format("Report Type [%s] does not exists",gradReportTypes.getCode()));
+			return gradReportTypes;
+		}
+	}
+
+	public int deleteGradReportTypes(@Valid String reportType,String accessToken) {
+		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
+		Boolean isPresent = restTemplate.exchange(String.format(getStudentReportByReportTypeCodeURL,reportType), HttpMethod.GET,
+				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		if(isPresent) {
+			validation.addErrorAndStop(String.format("This Report Type [%s] cannot be deleted as some students have this type associated with them.",reportType));
+			return 0;
+		}else {
+			gradReportTypesRepository.deleteById(reportType);
 			return 1;
 		}
 	}

@@ -38,6 +38,9 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING = "/gradrequirementtype";
     public static final String GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_BY_CODE_MAPPING = "/gradrequirementtype/{typeCode}";
     
+    public static final String GET_ALL_REPORT_TYPE_MAPPING = "/reporttype";
+    public static final String GET_ALL_REPORT_TYPE_BY_CODE_MAPPING = "/reporttype/{reportTypeCode}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";
@@ -49,9 +52,9 @@ public class EducGradCodeApiConstants {
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     
     public static final String TRAX_DATE_FORMAT = "yyyyMM";
-	public static final String ENDPOINT_GRAD_STATUS_BY_CERTIFICATE_TYPE_CODE_URL = "${endpoint.grad-graduation-status-api.grad_list_by_certificate_code.url}";
+	public static final String ENDPOINT_GRAD_STUDENT_CERTIFICATE_BY_CERTIFICATE_TYPE_CODE_URL = "${endpoint.grad-common-api.grad_certificate_list_by_certificate_code.url}";
 	public static final String ENDPOINT_STUDENT_UNGRAD_REASON_BY_UNGRAD_REASON_CODE_URL = "${endpoint.grad-common-api.student_ungrad_list_by_ungrad_reason_code.url}";
 	public static final String ENDPOINT_STUDENT_CAREER_PROGRAM_BY_CAREER_PROGRAM_CODE_URL = "${endpoint.grad-common-api.student_career_program_list_by_career_program_code.url}";
-	public static final String ENDPOINT_PROGRAM_TYPE_BY_PROGRAM_TYPE_CODE_URL = "${endpoint.grad-program-management-api.program_list_by_program_type_code.url}";
 	public static final String ENDPOINT_REQUIREMENT_TYPE_BY_REQUIREMENT_TYPE_CODE_URL = "${endpoint.grad-program-management-api.program_list_by_requirement_type_code.url}";
+	public static final String ENDPOINT_GRAD_STUDENT_REPORT_BY_REPORT_TYPE_CODE_URL = "${endpoint.grad-common-api.grad_report_list_by_report_code.url}";
 }
