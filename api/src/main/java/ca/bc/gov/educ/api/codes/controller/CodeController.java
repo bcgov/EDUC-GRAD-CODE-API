@@ -392,7 +392,7 @@ public class CodeController {
     	}
     }
     
-    @PostMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_MAPPING)
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_REPORT_TYPE_MAPPING)
     @PreAuthorize(PermissionsContants.CREATE_REPORT_TYPE)
     public ResponseEntity<ApiResponseModel<GradReportTypes>> createGradReportTypes(@Valid @RequestBody GradReportTypes gradReportTypes) { 
     	logger.debug("createGradReportTypes : ");
@@ -420,15 +420,15 @@ public class CodeController {
     
     @DeleteMapping(EducGradCodeApiConstants.GET_ALL_REPORT_TYPE_BY_CODE_MAPPING)
     @PreAuthorize(PermissionsContants.DELETE_REPORT_TYPE)
-    public ResponseEntity<Void> deleteGradReportTypes(@Valid @PathVariable String certTypeCode) { 
+    public ResponseEntity<Void> deleteGradReportTypes(@Valid @PathVariable String reportTypeCode) { 
     	logger.debug("deleteGradReportTypes : ");
-    	validation.requiredField(certTypeCode, "Report Type Code");
+    	validation.requiredField(reportTypeCode, "Report Type Code");
     	if(validation.hasErrors()) {
     		validation.stopOnErrors();
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
     	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
     	String accessToken = auth.getTokenValue();
-        return response.DELETE(codeService.deleteGradReportTypes(certTypeCode,accessToken));
+        return response.DELETE(codeService.deleteGradReportTypes(reportTypeCode,accessToken));
     }
 }
