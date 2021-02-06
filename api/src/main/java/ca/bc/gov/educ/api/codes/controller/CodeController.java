@@ -28,8 +28,8 @@ import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
 import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
-import ca.bc.gov.educ.api.codes.model.dto.GradProgramTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
+import ca.bc.gov.educ.api.codes.model.dto.GradReportTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
 import ca.bc.gov.educ.api.codes.service.CodeService;
@@ -314,65 +314,6 @@ public class CodeController {
         return response.DELETE(codeService.deleteGradCareerProgram(cpCode,accessToken));
     }
     
-    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.READ_GRAD_PROGRAM_TYPE_CODE)
-    public ResponseEntity<List<GradProgramTypes>> getAllProgramTypeCodeList() { 
-    	logger.debug("getAllProgramTypeCodeList : ");
-        return response.GET(codeService.getAllProgramTypeCodeList());
-    }
-    
-    @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_BY_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.READ_GRAD_PROGRAM_TYPE_CODE)
-    public ResponseEntity<GradProgramTypes> getSpecificProgramTypeCode(@PathVariable String typeCode) { 
-    	logger.debug("getSpecificProgramTypeCode : ");
-    	GradProgramTypes gradResponse = codeService.getSpecificProgramTypeCode(typeCode);
-    	if(gradResponse != null) {
-    		return response.GET(gradResponse);
-    	}else {
-    		return response.NOT_FOUND();
-    	}
-    }
-    
-    @PostMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.CREATE_PROGRAM_TYPE)
-    public ResponseEntity<ApiResponseModel<GradProgramTypes>> createGradProgramType(@Valid @RequestBody GradProgramTypes gradProgramTypes) { 
-    	logger.debug("createGradProgramTypes : ");
-    	validation.requiredField(gradProgramTypes.getCode(), "Program Type Code");
-    	validation.requiredField(gradProgramTypes.getDescription(), "Program Type Description");
-    	if(validation.hasErrors()) {
-    		validation.stopOnErrors();
-    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    	}
-        return response.CREATED(codeService.createGradProgramTypes(gradProgramTypes));
-    }
-    
-    @PutMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.UPDATE_PROGRAM_TYPE)
-    public ResponseEntity<ApiResponseModel<GradProgramTypes>> updateGradProgramTypes(@Valid @RequestBody GradProgramTypes gradProgramTypes) { 
-    	logger.info("updateGradProgramTypes : ");
-    	validation.requiredField(gradProgramTypes.getCode(), "Program Type Code");
-    	validation.requiredField(gradProgramTypes.getDescription(), "Program Type Description");
-    	if(validation.hasErrors()) {
-    		validation.stopOnErrors();
-    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    	}
-    	return response.UPDATED(codeService.updateGradProgramTypes(gradProgramTypes));
-    }
-    
-    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_GRAD_PROGRAM_TYPE_CODE_BY_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.DELETE_PROGRAM_TYPE)
-    public ResponseEntity<Void> deleteGradProgramTypes(@Valid @PathVariable String typeCode) { 
-    	logger.debug("deleteGradProgramTypes : ");
-    	validation.requiredField(typeCode, "Program Type Code");
-    	if(validation.hasErrors()) {
-    		validation.stopOnErrors();
-    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    	}
-    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
-    	String accessToken = auth.getTokenValue();
-        return response.DELETE(codeService.deleteGradProgramTypes(typeCode,accessToken));
-    }
-    
     @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING)
     @PreAuthorize(PermissionsContants.READ_GRAD_REQUIREMENT_TYPE_CODE)
     public ResponseEntity<List<GradRequirementTypes>> getAllRequirementTypeCodeList() { 
@@ -430,5 +371,64 @@ public class CodeController {
     	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
     	String accessToken = auth.getTokenValue();
         return response.DELETE(codeService.deleteGradRequirementTypes(typeCode,accessToken));
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_REPORT_TYPE_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_REPORT)
+    public ResponseEntity<List<GradReportTypes>> getAllReportTypeCodeList() { 
+    	logger.debug("getAllReportTypeCodeList : ");
+        return response.GET(codeService.getAllReportTypeCodeList());
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_REPORT_TYPE_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_REPORT)
+    public ResponseEntity<GradReportTypes> getSpecificReportTypeCode(@PathVariable String reportTypeCode) { 
+    	logger.debug("getSpecificReportTypeCode : ");
+    	GradReportTypes gradResponse = codeService.getSpecificReportTypeCode(reportTypeCode);
+    	if(gradResponse != null) {
+    		return response.GET(gradResponse);
+    	}else {
+    		return response.NOT_FOUND();
+    	}
+    }
+    
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_CERTIFICATE_TYPE_MAPPING)
+    @PreAuthorize(PermissionsContants.CREATE_REPORT_TYPE)
+    public ResponseEntity<ApiResponseModel<GradReportTypes>> createGradReportTypes(@Valid @RequestBody GradReportTypes gradReportTypes) { 
+    	logger.debug("createGradReportTypes : ");
+    	validation.requiredField(gradReportTypes.getCode(), "Report Type Code");
+    	validation.requiredField(gradReportTypes.getDescription(), "Report Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return response.CREATED(codeService.createGradReportTypes(gradReportTypes));
+    }
+    
+    @PutMapping(EducGradCodeApiConstants.GET_ALL_REPORT_TYPE_MAPPING)
+    @PreAuthorize(PermissionsContants.UPDATE_REPORT_TYPE)
+    public ResponseEntity<ApiResponseModel<GradReportTypes>> updateGradReportTypes(@Valid @RequestBody GradReportTypes gradReportTypes) { 
+    	logger.info("updateGradReportTypes : ");
+    	validation.requiredField(gradReportTypes.getCode(), "Report Type Code");
+    	validation.requiredField(gradReportTypes.getDescription(), "Report Type Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	return response.UPDATED(codeService.updateGradReportTypes(gradReportTypes));
+    }
+    
+    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_REPORT_TYPE_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.DELETE_REPORT_TYPE)
+    public ResponseEntity<Void> deleteGradReportTypes(@Valid @PathVariable String certTypeCode) { 
+    	logger.debug("deleteGradReportTypes : ");
+    	validation.requiredField(certTypeCode, "Report Type Code");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
+    	String accessToken = auth.getTokenValue();
+        return response.DELETE(codeService.deleteGradReportTypes(certTypeCode,accessToken));
     }
 }

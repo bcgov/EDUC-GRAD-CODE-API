@@ -5,21 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Immutable;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "GRAD_PROGRAM_TYPE")
-public class GradProgramTypesEntity extends BaseEntity {
-    
+@Table(name = "GRAD_REPORT_TYPES")
+public class GradReportTypesEntity extends BaseEntity {
+   
 	@Id
-	@Column(name = "CODE", nullable = false)
+	@Column(name = "REPORT_CODE", nullable = false)
     private String code; 
 	
-	@Column(name = "DESCRIPTION", nullable = true)
+	@Column(name = "REPORT_DESCRIPTION", nullable = true)
     private String description;	
+	
 }
