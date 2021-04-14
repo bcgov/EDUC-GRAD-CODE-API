@@ -76,9 +76,9 @@ endpoint:
    url: https://educ-grad-common-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/common/ungrad/%s
   student_career_program_list_by_career_program_code: 
    url: https://educ-grad-common-api-77c02f-dev.apps.silver.devops.gov.bc.ca//api/v1/common/career/%s
+  grad_report_list_by_report_code: 
+   url: https://educ-grad-common-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/common/report/%s
  grad-program-management-api: 
   program_list_by_requirement_type_code: 
    url: https://educ-grad-program-management-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/programmanagement/requirementtype/%s
- grad-common-api: 
-  grad_report_list_by_report_code: 
-   url: https://educ-grad-common-api-77c02f-dev.apps.silver.devops.gov.bc.ca/api/v1/common/report/%s
+  
