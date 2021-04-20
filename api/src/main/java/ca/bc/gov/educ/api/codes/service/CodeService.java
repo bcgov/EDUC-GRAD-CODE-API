@@ -13,11 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.educ.api.codes.model.dto.GradCareerProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
@@ -56,7 +54,6 @@ import ca.bc.gov.educ.api.codes.repository.GradReportTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
-import ca.bc.gov.educ.api.codes.util.EducGradCodeApiUtils;
 import ca.bc.gov.educ.api.codes.util.GradValidation;
 
 @Service
@@ -134,7 +131,8 @@ public class CodeService {
 	@Value(EducGradCodeApiConstants.ENDPOINT_REQUIREMENT_TYPE_BY_REQUIREMENT_TYPE_CODE_URL)
     private String getRequirementTypeByRequirementTypeCodeURL; 
 	
-	
+	@Autowired
+    WebClient webClient;
     
     @Autowired
     RestTemplate restTemplate;
@@ -350,9 +348,7 @@ public class CodeService {
 	}
 
 	public int deleteGradUngradReasons(@Valid String reasonCode,String accessToken) {
-		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
-		Boolean isPresent = restTemplate.exchange(String.format(getStudentUngradReasonByUngradReasonCodeURL,reasonCode), HttpMethod.GET,
-				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		Boolean isPresent = webClient.get().uri(String.format(getStudentUngradReasonByUngradReasonCodeURL,reasonCode)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
 		if(isPresent) {
 			validation.addErrorAndStop(String.format("This Ungrad Reason [%s] cannot be deleted as some students have this reason associated with them.",reasonCode));
 			return 0;
@@ -388,9 +384,7 @@ public class CodeService {
 	}
 
 	public int deleteGradCertificateTypes(@Valid String certificateType,String accessToken) {
-		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
-		Boolean isPresent = restTemplate.exchange(String.format(getStudentCertificateByCertificateTypeCodeURL,certificateType), HttpMethod.GET,
-				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		Boolean isPresent = webClient.get().uri(String.format(getStudentCertificateByCertificateTypeCodeURL,certificateType)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
 		if(isPresent) {
 			validation.addErrorAndStop(String.format("This Certificate Type [%s] cannot be deleted as some students have this type associated with them.",certificateType));
 			return 0;
@@ -425,9 +419,7 @@ public class CodeService {
 	}
 
 	public int deleteGradCareerProgram(@Valid String cpCode, String accessToken) {
-		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
-		Boolean isPresent = restTemplate.exchange(String.format(getStudentCareerProgramByCareerProgramCodeURL,cpCode), HttpMethod.GET,
-				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		Boolean isPresent = webClient.get().uri(String.format(getStudentCareerProgramByCareerProgramCodeURL,cpCode)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
 		if(isPresent) {
 			validation.addErrorAndStop(String.format("This Career Program [%s] cannot be deleted as some students have this code associated with them.",cpCode));
 			return 0;
@@ -462,9 +454,7 @@ public class CodeService {
 	}
 
 	public int deleteGradRequirementTypes(@Valid String programType, String accessToken) {
-		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
-		Boolean isPresent = restTemplate.exchange(String.format(getRequirementTypeByRequirementTypeCodeURL,programType), HttpMethod.GET,
-				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		Boolean isPresent = webClient.get().uri(String.format(getRequirementTypeByRequirementTypeCodeURL,programType)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
 		if(isPresent) {
 			validation.addErrorAndStop(String.format("This Requirement Type [%s] cannot be deleted as some rules are of this type.",programType));
 			return 0;
@@ -522,9 +512,7 @@ public class CodeService {
 	}
 
 	public int deleteGradReportTypes(@Valid String reportType,String accessToken) {
-		HttpHeaders httpHeaders = EducGradCodeApiUtils.getHeaders(accessToken);
-		Boolean isPresent = restTemplate.exchange(String.format(getStudentReportByReportTypeCodeURL,reportType), HttpMethod.GET,
-				new HttpEntity<>(httpHeaders), boolean.class).getBody();
+		Boolean isPresent = webClient.get().uri(String.format(getStudentReportByReportTypeCodeURL,reportType)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
 		if(isPresent) {
 			validation.addErrorAndStop(String.format("This Report Type [%s] cannot be deleted as some students have this type associated with them.",reportType));
 			return 0;
