@@ -511,7 +511,7 @@ public class CodeController {
         return response.GET(codeService.getAllStudentStatusCodeList());
     }
     
-    @GetMapping(EducGradCodeApiConstants.GET_ALL_STUDENT_STATUS_MAPPING)
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_STUDENT_STATUS_BY_CODE_MAPPING)
     @PreAuthorize(PermissionsContants.READ_GRAD_STUDENT_STATUS)
     @Operation(summary = "Find a Student Status by Student Status Code", description = "Get a Student Status by Student Status Code", tags = { "Province" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "204", description = "NO CONTENT.")})
