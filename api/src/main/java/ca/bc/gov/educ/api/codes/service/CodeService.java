@@ -26,6 +26,7 @@ import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradReportTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
+import ca.bc.gov.educ.api.codes.model.dto.StudentStatus;
 import ca.bc.gov.educ.api.codes.model.entity.GradCareerProgramEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradCertificateTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradCountryEntity;
@@ -35,6 +36,7 @@ import ca.bc.gov.educ.api.codes.model.entity.GradProvinceEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradReportTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradRequirementTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradUngradReasonsEntity;
+import ca.bc.gov.educ.api.codes.model.entity.StudentStatusEntity;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCareerProgramTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradCountryTransformer;
@@ -44,6 +46,7 @@ import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradReportTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradRequirementTypesTransformer;
 import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
+import ca.bc.gov.educ.api.codes.model.transformer.StudentStatusTransformer;
 import ca.bc.gov.educ.api.codes.repository.GradCareerProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCountryRepository;
@@ -53,6 +56,7 @@ import ca.bc.gov.educ.api.codes.repository.GradProvinceRepository;
 import ca.bc.gov.educ.api.codes.repository.GradReportTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
+import ca.bc.gov.educ.api.codes.repository.StudentStatusRepository;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
 import ca.bc.gov.educ.api.codes.util.GradValidation;
 
@@ -130,6 +134,16 @@ public class CodeService {
 	
 	@Value(EducGradCodeApiConstants.ENDPOINT_REQUIREMENT_TYPE_BY_REQUIREMENT_TYPE_CODE_URL)
     private String getRequirementTypeByRequirementTypeCodeURL; 
+	
+	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STUDENT_STATUS_URL)
+    private String getStudentStatusCodeURL;
+	
+	
+	@Autowired
+	private StudentStatusRepository studentStatusRepository;
+
+	@Autowired
+	private StudentStatusTransformer studentStatusTransformer;
 	
 	@Autowired
     WebClient webClient;
@@ -520,5 +534,63 @@ public class CodeService {
 			gradReportTypesRepository.deleteById(reportType);
 			return 1;
 		}
+	}
+	
+	@Transactional
+	public List<StudentStatus> getAllStudentStatusCodeList() {
+		List<StudentStatus> studentStatusCodeList = new ArrayList<StudentStatus>();
+		try {
+			studentStatusCodeList = studentStatusTransformer.transformToDTO(studentStatusRepository.findAll());
+		} catch (Exception e) {
+			logger.debug("Exception:" + e);
+		}
+
+		return studentStatusCodeList;
+	}
+
+	@Transactional
+	public StudentStatus getSpecificStudentStatusCode(String statusCode) {
+		Optional<StudentStatusEntity> entity = studentStatusRepository.findById(StringUtils.toRootUpperCase(statusCode));
+		if (entity.isPresent()) {
+			return studentStatusTransformer.transformToDTO(entity);
+		} else {
+			return null;
+		}
+	}
+
+	public StudentStatus createStudentStatus(@Valid StudentStatus studentStatus) {
+		StudentStatusEntity toBeSavedObject = studentStatusTransformer.transformToEntity(studentStatus);
+		Optional<StudentStatusEntity> existingObjectCheck = studentStatusRepository.findById(studentStatus.getCode());
+		if(existingObjectCheck.isPresent()) {
+			validation.addErrorAndStop(String.format("Student Status Code [%s] already exists",studentStatus.getCode()));
+			return studentStatus;			
+		}else {
+			return studentStatusTransformer.transformToDTO(studentStatusRepository.save(toBeSavedObject));
+		}	
+	}
+
+	public StudentStatus updateStudentStatus(@Valid StudentStatus studentStatus) {
+		Optional<StudentStatusEntity> studentStatusOptional = studentStatusRepository.findById(studentStatus.getCode());
+		StudentStatusEntity sourceObject = studentStatusTransformer.transformToEntity(studentStatus);
+		if(studentStatusOptional.isPresent()) {
+			StudentStatusEntity gradEnity = studentStatusOptional.get();			
+			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+    		return studentStatusTransformer.transformToDTO(studentStatusRepository.save(gradEnity));
+		}else {
+			validation.addErrorAndStop(String.format("Student Status Code [%s] does not exists",studentStatus.getCode()));
+			return studentStatus;
+		}
+	}
+
+	public int deleteStudentStatus(@Valid String statusCode,String accessToken) {
+		Boolean isPresent = webClient.get().uri(String.format(getStudentStatusCodeURL,statusCode)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
+		if(isPresent) {
+			validation.addErrorAndStop(String.format("This Student Status [%s] cannot be deleted as some students have this status associated with them.",statusCode));
+			return 0;
+		}else {
+			studentStatusRepository.deleteById(statusCode);
+			return 1;
+		}
+		
 	}
 }
