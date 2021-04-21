@@ -32,6 +32,7 @@ import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
 import ca.bc.gov.educ.api.codes.model.dto.GradReportTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
+import ca.bc.gov.educ.api.codes.model.dto.StudentStatus;
 import ca.bc.gov.educ.api.codes.service.CodeService;
 import ca.bc.gov.educ.api.codes.util.ApiResponseModel;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
@@ -499,5 +500,75 @@ public class CodeController {
     	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
     	String accessToken = auth.getTokenValue();
         return response.DELETE(codeService.deleteGradReportTypes(reportTypeCode,accessToken));
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_STUDENT_STATUS_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_STUDENT_STATUS)
+    @Operation(summary = "Find all Student Status", description = "Get all Student Status", tags = { "Student Status" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "204", description = "NO CONTENT.")})
+    public ResponseEntity<List<StudentStatus>> getAllStudentStatusCodeList() { 
+    	logger.debug("getAllUngradReasonCodeList : ");
+        return response.GET(codeService.getAllStudentStatusCodeList());
+    }
+    
+    @GetMapping(EducGradCodeApiConstants.GET_ALL_STUDENT_STATUS_MAPPING)
+    @PreAuthorize(PermissionsContants.READ_GRAD_STUDENT_STATUS)
+    @Operation(summary = "Find a Student Status by Student Status Code", description = "Get a Student Status by Student Status Code", tags = { "Province" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "204", description = "NO CONTENT.")})
+    public ResponseEntity<StudentStatus> getSpecificStudentStatusCode(@PathVariable String reasonCode) { 
+    	logger.debug("getSpecificUngradReasonCode : ");
+    	StudentStatus gradResponse = codeService.getSpecificStudentStatusCode(reasonCode);
+    	if(gradResponse != null) {
+    		return response.GET(gradResponse);
+    	}else {
+    		return response.NO_CONTENT();
+    	}
+        
+    }
+    
+    @PostMapping(EducGradCodeApiConstants.GET_ALL_STUDENT_STATUS_MAPPING)
+    @PreAuthorize(PermissionsContants.CREATE_STUDENT_STATUS)
+    @Operation(summary = "Create a Student Status", description = "Create a Student Status", tags = { "Student Status" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    public ResponseEntity<ApiResponseModel<StudentStatus>> createStudentStatus(@Valid @RequestBody StudentStatus studentStatus) { 
+    	logger.debug("createStudentStatus : ");
+    	validation.requiredField(studentStatus.getCode(), "Status Code");
+    	validation.requiredField(studentStatus.getDescription(), "Status Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return response.CREATED(codeService.createStudentStatus(studentStatus));
+    }
+    
+    @PutMapping(EducGradCodeApiConstants.GET_ALL_STUDENT_STATUS_MAPPING)
+    @PreAuthorize(PermissionsContants.UPDATE_STUDENT_STATUS)
+    @Operation(summary = "Update an Student Status", description = "Update an Student Status", tags = { "Student Status" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    public ResponseEntity<ApiResponseModel<StudentStatus>> updateStudentStatusCode(@Valid @RequestBody StudentStatus studentStatus) { 
+    	logger.info("updateStudentStatusCode : ");
+    	validation.requiredField(studentStatus.getCode(), "Status Code");
+    	validation.requiredField(studentStatus.getDescription(), "Status Description");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	return response.UPDATED(codeService.updateStudentStatus(studentStatus));
+    }
+    
+    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_STUDENT_STATUS_BY_CODE_MAPPING)
+    @PreAuthorize(PermissionsContants.DELETE_STUDENT_STATUS)
+    @Operation(summary = "Delete an Student Status", description = "Delete an Student Status", tags = { "Student Status" })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    public ResponseEntity<Void> deleteStudentStatusCodes(@Valid @PathVariable String statusCode) { 
+    	logger.debug("deleteStudentStatusCodes : ");
+    	validation.requiredField(statusCode, "Status Code");
+    	if(validation.hasErrors()) {
+    		validation.stopOnErrors();
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    	OAuth2AuthenticationDetails auth = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails(); 
+    	String accessToken = auth.getTokenValue();
+        return response.DELETE(codeService.deleteStudentStatus(statusCode,accessToken));
     }
 }

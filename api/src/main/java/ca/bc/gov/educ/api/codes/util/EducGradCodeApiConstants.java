@@ -41,6 +41,9 @@ public class EducGradCodeApiConstants {
     public static final String GET_ALL_REPORT_TYPE_MAPPING = "/reporttype";
     public static final String GET_ALL_REPORT_TYPE_BY_CODE_MAPPING = "/reporttype/{reportTypeCode}";
     
+    public static final String GET_ALL_STUDENT_STATUS_MAPPING = "/studentstatus";
+    public static final String GET_ALL_STUDENT_STATUS_BY_CODE_MAPPING = "/studentstatus/{statusCode}";
+    
     
     //Default Attribute value constants
     public static final String DEFAULT_CREATED_BY = "CodeAPI";
@@ -57,4 +60,5 @@ public class EducGradCodeApiConstants {
 	public static final String ENDPOINT_STUDENT_CAREER_PROGRAM_BY_CAREER_PROGRAM_CODE_URL = "${endpoint.grad-common-api.student_career_program_list_by_career_program_code.url}";
 	public static final String ENDPOINT_REQUIREMENT_TYPE_BY_REQUIREMENT_TYPE_CODE_URL = "${endpoint.grad-program-management-api.program_list_by_requirement_type_code.url}";
 	public static final String ENDPOINT_GRAD_STUDENT_REPORT_BY_REPORT_TYPE_CODE_URL = "${endpoint.grad-common-api.grad_report_list_by_report_code.url}";
+	public static final String ENDPOINT_GRAD_STUDENT_STATUS_URL="{endpoint.graduation-status-api.check-grad-student-status.url}";
 }
