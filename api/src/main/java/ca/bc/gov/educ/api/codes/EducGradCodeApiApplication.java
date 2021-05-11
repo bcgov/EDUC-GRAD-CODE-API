@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
 import ca.bc.gov.educ.api.codes.model.entity.GradProgramEntity;
+import reactor.netty.http.client.HttpClient;
 
 @SpringBootApplication
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -50,7 +51,9 @@ public class EducGradCodeApiApplication {
 	
 	@Bean
 	public WebClient webClient() {
-		return WebClient.create();
+		HttpClient client = HttpClient.create();
+		client.warmup().block();
+		return WebClient.builder().build();
 	}
 	
 	@Configuration
