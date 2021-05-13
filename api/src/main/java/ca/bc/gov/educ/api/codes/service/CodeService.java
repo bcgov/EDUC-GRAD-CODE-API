@@ -362,9 +362,15 @@ public class CodeService {
 	}
 
 	public int deleteGradUngradReasons(@Valid String reasonCode,String accessToken) {
-		Boolean isPresent = webClient.get().uri(String.format(getStudentUngradReasonByUngradReasonCodeURL,reasonCode)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
+		Boolean isPresent = webClient.get()
+				.uri(String.format(getStudentUngradReasonByUngradReasonCodeURL,reasonCode))
+				.headers(h -> h.setBearerAuth(accessToken))
+				.retrieve()
+				.bodyToMono(boolean.class)
+				.block();
 		if(isPresent) {
-			validation.addErrorAndStop(String.format("This Ungrad Reason [%s] cannot be deleted as some students have this reason associated with them.",reasonCode));
+			validation.addErrorAndStop(
+					String.format("This Ungrad Reason [%s] cannot be deleted as some students have this reason associated with them.",reasonCode));
 			return 0;
 		}else {
 			gradUngradReasonsRepository.deleteById(reasonCode);
@@ -398,9 +404,15 @@ public class CodeService {
 	}
 
 	public int deleteGradCertificateTypes(@Valid String certificateType,String accessToken) {
-		Boolean isPresent = webClient.get().uri(String.format(getStudentCertificateByCertificateTypeCodeURL,certificateType)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
+		Boolean isPresent = webClient.get()
+				.uri(String.format(getStudentCertificateByCertificateTypeCodeURL,certificateType))
+				.headers(h -> h.setBearerAuth(accessToken))
+				.retrieve()
+				.bodyToMono(boolean.class)
+				.block();
 		if(isPresent) {
-			validation.addErrorAndStop(String.format("This Certificate Type [%s] cannot be deleted as some students have this type associated with them.",certificateType));
+			validation.addErrorAndStop(
+					String.format("This Certificate Type [%s] cannot be deleted as some students have this type associated with them.",certificateType));
 			return 0;
 		}else {
 			gradCertificateTypesRepository.deleteById(certificateType);
@@ -433,9 +445,15 @@ public class CodeService {
 	}
 
 	public int deleteGradCareerProgram(@Valid String cpCode, String accessToken) {
-		Boolean isPresent = webClient.get().uri(String.format(getStudentCareerProgramByCareerProgramCodeURL,cpCode)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
+		Boolean isPresent = webClient.get()
+				.uri(String.format(getStudentCareerProgramByCareerProgramCodeURL,cpCode))
+				.headers(h -> h.setBearerAuth(accessToken))
+				.retrieve()
+				.bodyToMono(boolean.class)
+				.block();
 		if(isPresent) {
-			validation.addErrorAndStop(String.format("This Career Program [%s] cannot be deleted as some students have this code associated with them.",cpCode));
+			validation.addErrorAndStop(
+					String.format("This Career Program [%s] cannot be deleted as some students have this code associated with them.",cpCode));
 			return 0;
 		}else {
 			gradCareerProgramRepository.deleteById(cpCode);
@@ -468,9 +486,15 @@ public class CodeService {
 	}
 
 	public int deleteGradRequirementTypes(@Valid String programType, String accessToken) {
-		Boolean isPresent = webClient.get().uri(String.format(getRequirementTypeByRequirementTypeCodeURL,programType)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
+		Boolean isPresent = webClient.get()
+				.uri(String.format(getRequirementTypeByRequirementTypeCodeURL,programType))
+				.headers(h -> h.setBearerAuth(accessToken))
+				.retrieve()
+				.bodyToMono(boolean.class)
+				.block();
 		if(isPresent) {
-			validation.addErrorAndStop(String.format("This Requirement Type [%s] cannot be deleted as some rules are of this type.",programType));
+			validation.addErrorAndStop(
+					String.format("This Requirement Type [%s] cannot be deleted as some rules are of this type.",programType));
 			return 0;
 		}else {
 			gradRequirementTypesRepository.deleteById(programType);
@@ -526,9 +550,15 @@ public class CodeService {
 	}
 
 	public int deleteGradReportTypes(@Valid String reportType,String accessToken) {
-		Boolean isPresent = webClient.get().uri(String.format(getStudentReportByReportTypeCodeURL,reportType)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
+		Boolean isPresent = webClient.get()
+				.uri(String.format(getStudentReportByReportTypeCodeURL,reportType))
+				.headers(h -> h.setBearerAuth(accessToken))
+				.retrieve()
+				.bodyToMono(boolean.class)
+				.block();
 		if(isPresent) {
-			validation.addErrorAndStop(String.format("This Report Type [%s] cannot be deleted as some students have this type associated with them.",reportType));
+			validation.addErrorAndStop(
+					String.format("This Report Type [%s] cannot be deleted as some students have this type associated with them.",reportType));
 			return 0;
 		}else {
 			gradReportTypesRepository.deleteById(reportType);
@@ -583,9 +613,15 @@ public class CodeService {
 	}
 
 	public int deleteStudentStatus(@Valid String statusCode,String accessToken) {
-		Boolean isPresent = webClient.get().uri(String.format(getStudentStatusCodeURL,statusCode)).headers(h -> h.setBearerAuth(accessToken)).retrieve().bodyToMono(boolean.class).block();
+		Boolean isPresent = webClient.get()
+				.uri(String.format(getStudentStatusCodeURL,statusCode))
+				.headers(h -> h.setBearerAuth(accessToken))
+				.retrieve()
+				.bodyToMono(boolean.class)
+				.block();
 		if(isPresent) {
-			validation.addErrorAndStop(String.format("This Student Status [%s] cannot be deleted as some students have this status associated with them.",statusCode));
+			validation.addErrorAndStop(
+					String.format("This Student Status [%s] cannot be deleted as some students have this status associated with them.",statusCode));
 			return 0;
 		}else {
 			studentStatusRepository.deleteById(statusCode);
