@@ -507,7 +507,7 @@ public class CodeController {
     @Operation(summary = "Find all Student Status", description = "Get all Student Status", tags = { "Student Status" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "204", description = "NO CONTENT.")})
     public ResponseEntity<List<StudentStatus>> getAllStudentStatusCodeList() { 
-    	logger.debug("getAllUngradReasonCodeList : ");
+    	logger.debug("getAllStudentStatusCodeList : ");
         return response.GET(codeService.getAllStudentStatusCodeList());
     }
     
@@ -516,7 +516,7 @@ public class CodeController {
     @Operation(summary = "Find a Student Status by Student Status Code", description = "Get a Student Status by Student Status Code", tags = { "Province" })
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "204", description = "NO CONTENT.")})
     public ResponseEntity<StudentStatus> getSpecificStudentStatusCode(@PathVariable String statusCode) { 
-    	logger.debug("getSpecificUngradReasonCode : ");
+    	logger.debug("getSpecificStudentStatusCode : ");
     	StudentStatus gradResponse = codeService.getSpecificStudentStatusCode(statusCode);
     	if(gradResponse != null) {
     		return response.GET(gradResponse);
