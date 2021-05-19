@@ -152,6 +152,9 @@ public class CodeService {
     RestTemplate restTemplate;
 
 	private static Logger logger = LoggerFactory.getLogger(CodeService.class);
+	private static final String EXCEPTION_MSG = "Exception: %s";
+	private static final String CREATED_BY="createdBy";
+	private static final String CREATED_TIMESTAMP="createdTimestamp";
 
 	/**
 	 * Get all Programs in Grad Program DTO
@@ -161,14 +164,7 @@ public class CodeService {
 	 */
 	@Transactional
 	public List<GradProgram> getAllProgramList() {
-		List<GradProgram> programList = new ArrayList<GradProgram>();
-		try {
-			programList = gradProgramTransformer.transformToDTO(gradProgramRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return programList;
+		return gradProgramTransformer.transformToDTO(gradProgramRepository.findAll());
 	}
 
 	@Transactional
@@ -183,14 +179,7 @@ public class CodeService {
 
 	@Transactional
 	public List<GradCountry> getAllCountryCodeList() {
-		List<GradCountry> gradSpecialCaseList = new ArrayList<GradCountry>();
-		try {
-			gradSpecialCaseList = gradCountryTransformer.transformToDTO(gradCountryRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradSpecialCaseList;
+		return gradCountryTransformer.transformToDTO(gradCountryRepository.findAll());
 	}
 
 	@Transactional
@@ -205,14 +194,7 @@ public class CodeService {
 
 	@Transactional
 	public List<GradProvince> getAllProvinceCodeList() {
-		List<GradProvince> gradLetterGradeList = new ArrayList<GradProvince>();
-		try {
-			gradLetterGradeList = gradProvinceTransformer.transformToDTO(gradProvinceRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradLetterGradeList;
+		return gradProvinceTransformer.transformToDTO(gradProvinceRepository.findAll());
 	}
 
 	@Transactional
@@ -227,14 +209,7 @@ public class CodeService {
 
 	@Transactional
 	public List<GradUngradReasons> getAllUngradReasonCodeList() {
-		List<GradUngradReasons> gradUngradReasonList = new ArrayList<GradUngradReasons>();
-		try {
-			gradUngradReasonList = gradUngradReasonsTransformer.transformToDTO(gradUngradReasonsRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradUngradReasonList;
+		return gradUngradReasonsTransformer.transformToDTO(gradUngradReasonsRepository.findAll());
 	}
 
 	@Transactional
@@ -249,15 +224,7 @@ public class CodeService {
 
 	@Transactional
 	public List<GradCertificateTypes> getAllCertificateTypeCodeList() {
-		List<GradCertificateTypes> gradCertificateTypeList = new ArrayList<GradCertificateTypes>();
-		try {
-			gradCertificateTypeList = gradCertificateTypesTransformer
-					.transformToDTO(gradCertificateTypesRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradCertificateTypeList;
+		return gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.findAll());
 	}
 
 	@Transactional
@@ -271,14 +238,7 @@ public class CodeService {
 	}
 
 	public List<GradMessaging> getAllGradMessagingList() {
-		List<GradMessaging> gradMessagingList = new ArrayList<GradMessaging>();
-		try {
-			gradMessagingList = gradMessagingTransformer.transformToDTO(gradMessagingRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradMessagingList;
+		return gradMessagingTransformer.transformToDTO(gradMessagingRepository.findAll());
 	}
 
 	public GradMessaging getSpecificGradMessagingCode(String pgmCode, String msgType) {
@@ -293,11 +253,11 @@ public class CodeService {
 
 	@Transactional
 	public List<GradCareerProgram> getAllCareerProgramCodeList() {
-		List<GradCareerProgram> gradCareerProgramList = new ArrayList<GradCareerProgram>();
+		List<GradCareerProgram> gradCareerProgramList = new ArrayList<>();
 		try {
 			gradCareerProgramList = gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.findAll());
 		} catch (Exception e) {
-			logger.debug("Exception:" + e);
+			logger.debug(String.format(EXCEPTION_MSG,e));
 		}
 
 		return gradCareerProgramList;
@@ -316,14 +276,7 @@ public class CodeService {
 
 	@Transactional
 	public List<GradRequirementTypes> getAllRequirementTypeCodeList() {
-		List<GradRequirementTypes> gradRequirementTypesList = new ArrayList<GradRequirementTypes>();
-		try {
-			gradRequirementTypesList = gradRequirementTypesTransformer.transformToDTO(gradRequirementTypesRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradRequirementTypesList;
+		return gradRequirementTypesTransformer.transformToDTO(gradRequirementTypesRepository.findAll());
 	}
 
 	@Transactional
@@ -353,7 +306,7 @@ public class CodeService {
 		GradUngradReasonsEntity sourceObject = gradUngradReasonsTransformer.transformToEntity(gradUngradReasons);
 		if(gradUngradReasonOptional.isPresent()) {
 			GradUngradReasonsEntity gradEnity = gradUngradReasonOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+			BeanUtils.copyProperties(sourceObject,gradEnity,CREATED_BY,CREATED_TIMESTAMP);
     		return gradUngradReasonsTransformer.transformToDTO(gradUngradReasonsRepository.save(gradEnity));
 		}else {
 			validation.addErrorAndStop(String.format("Reason Code [%s] does not exists",gradUngradReasons.getCode()));
@@ -395,7 +348,7 @@ public class CodeService {
 		GradCertificateTypesEntity sourceObject = gradCertificateTypesTransformer.transformToEntity(gradCertificateTypes);
 		if(gradCertificateTypesOptional.isPresent()) {
 			GradCertificateTypesEntity gradEnity = gradCertificateTypesOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+			BeanUtils.copyProperties(sourceObject,gradEnity,CREATED_BY,CREATED_TIMESTAMP);
     		return gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.save(gradEnity));
 		}else {
 			validation.addErrorAndStop(String.format("Certificate Type [%s] does not exists",gradCertificateTypes.getCode()));
@@ -436,7 +389,7 @@ public class CodeService {
 		GradCareerProgramEntity sourceObject = gradCareerProgramTransformer.transformToEntity(gradCareerProgram);
 		if(gradCareerProgramOptional.isPresent()) {
 			GradCareerProgramEntity gradEnity = gradCareerProgramOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+			BeanUtils.copyProperties(sourceObject,gradEnity,CREATED_BY,CREATED_TIMESTAMP);
     		return gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.save(gradEnity));
 		}else {
 			validation.addErrorAndStop(String.format("Career Program [%s] does not exists",gradCareerProgram.getCode()));
@@ -477,7 +430,7 @@ public class CodeService {
 		GradRequirementTypesEntity sourceObject = gradRequirementTypesTransformer.transformToEntity(gradRequirementTypes);
 		if(gradRequirementTypesOptional.isPresent()) {
 			GradRequirementTypesEntity gradEnity = gradRequirementTypesOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+			BeanUtils.copyProperties(sourceObject,gradEnity,CREATED_BY,CREATED_TIMESTAMP);
     		return gradRequirementTypesTransformer.transformToDTO(gradRequirementTypesRepository.save(gradEnity));
 		}else {
 			validation.addErrorAndStop(String.format("Requirement Type [%s] does not exists",gradRequirementTypes.getCode()));
@@ -504,15 +457,7 @@ public class CodeService {
 	
 	@Transactional
 	public List<GradReportTypes> getAllReportTypeCodeList() {
-		List<GradReportTypes> gradReportTypeList = new ArrayList<GradReportTypes>();
-		try {
-			gradReportTypeList = gradReportTypesTransformer
-					.transformToDTO(gradReportTypesRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return gradReportTypeList;
+		return gradReportTypesTransformer.transformToDTO(gradReportTypesRepository.findAll());
 	}
 
 	@Transactional
@@ -541,7 +486,7 @@ public class CodeService {
 		GradReportTypesEntity sourceObject = gradReportTypesTransformer.transformToEntity(gradReportTypes);
 		if(gradReportTypesOptional.isPresent()) {
 			GradReportTypesEntity gradEnity = gradReportTypesOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+			BeanUtils.copyProperties(sourceObject,gradEnity,CREATED_BY,CREATED_TIMESTAMP);
     		return gradReportTypesTransformer.transformToDTO(gradReportTypesRepository.save(gradEnity));
 		}else {
 			validation.addErrorAndStop(String.format("Report Type [%s] does not exists",gradReportTypes.getCode()));
@@ -568,14 +513,7 @@ public class CodeService {
 	
 	@Transactional
 	public List<StudentStatus> getAllStudentStatusCodeList() {
-		List<StudentStatus> studentStatusCodeList = new ArrayList<StudentStatus>();
-		try {
-			studentStatusCodeList = studentStatusTransformer.transformToDTO(studentStatusRepository.findAll());
-		} catch (Exception e) {
-			logger.debug("Exception:" + e);
-		}
-
-		return studentStatusCodeList;
+		return studentStatusTransformer.transformToDTO(studentStatusRepository.findAll());
 	}
 
 	@Transactional
@@ -604,7 +542,7 @@ public class CodeService {
 		StudentStatusEntity sourceObject = studentStatusTransformer.transformToEntity(studentStatus);
 		if(studentStatusOptional.isPresent()) {
 			StudentStatusEntity gradEnity = studentStatusOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,"createdBy","createdTimestamp");
+			BeanUtils.copyProperties(sourceObject,gradEnity,CREATED_BY,CREATED_TIMESTAMP);
     		return studentStatusTransformer.transformToDTO(studentStatusRepository.save(gradEnity));
 		}else {
 			validation.addErrorAndStop(String.format("Student Status Code [%s] does not exists",studentStatus.getCode()));
