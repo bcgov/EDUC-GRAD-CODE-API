@@ -12,10 +12,8 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "STUDENT_STATUS_CODE")
 public class StudentStatusEntity {
@@ -41,8 +39,12 @@ public class StudentStatusEntity {
 	
 	@PrePersist
 	protected void onCreate() {
-		this.updatedBy = "GRADUATION";
-		this.createdBy = "GRADUATION";
+		if (StringUtils.isBlank(createdBy)) {
+			this.createdBy = "GRADUATION";
+		}		
+		if (StringUtils.isBlank(updatedBy)) {
+			this.updatedBy = "GRADUATION";
+		}		
 		this.createdTimestamp = new Date(System.currentTimeMillis());
 		this.updatedTimestamp = new Date(System.currentTimeMillis());
 
@@ -51,9 +53,11 @@ public class StudentStatusEntity {
 	@PreUpdate
 	protected void onPersist() {
 		this.updatedTimestamp = new Date(System.currentTimeMillis());
-		this.updatedBy = "GRADUATION";
+		if (StringUtils.isBlank(updatedBy)) {
+			this.updatedBy = "GRADUATION";
+		}
 		if (StringUtils.isBlank(createdBy)) {
-			createdBy = "GRADUATION";
+			this.createdBy = "GRADUATION";
 		}
 		if (this.createdTimestamp == null) {
 			this.createdTimestamp = new Date(System.currentTimeMillis());

@@ -40,6 +40,13 @@ import java.util.List;
 public class CodeController {
 
     private static Logger logger = LoggerFactory.getLogger(CodeController.class);
+    
+    private static final String REASON_CODE="Reason Code";
+    private static final String STATUS_CODE="Status Code";
+    private static final String REPORT_TYPE_CODE="Report Type Code";
+    private static final String REQUIREMENT_TYPE_CODE="Requirement Type Code";
+    private static final String CERTIFICATE_TYPE_CODE="Certificate Type Code";
+    private static final String CAREER_PROGRAM_CODE="Career Program Code";
 
     @Autowired
     CodeService codeService;
@@ -156,7 +163,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<ApiResponseModel<GradUngradReasons>> createGradUngradReasons(@Valid @RequestBody GradUngradReasons gradUngradReasons) {
         logger.debug("createGradUngradReason : ");
-        validation.requiredField(gradUngradReasons.getCode(), "Reason Code");
+        validation.requiredField(gradUngradReasons.getCode(), REASON_CODE);
         validation.requiredField(gradUngradReasons.getDescription(), "Reason Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -172,7 +179,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<ApiResponseModel<GradUngradReasons>> updateGradUngradReasons(@Valid @RequestBody GradUngradReasons gradUngradReasons) {
         logger.info("updateGradUngradReasons : ");
-        validation.requiredField(gradUngradReasons.getCode(), "Reason Code");
+        validation.requiredField(gradUngradReasons.getCode(), REASON_CODE);
         validation.requiredField(gradUngradReasons.getDescription(), "Reason Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -187,7 +194,7 @@ public class CodeController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<Void> deleteGradUngradReasons(@Valid @PathVariable String reasonCode) {
         logger.debug("deleteGradUngradReason : ");
-        validation.requiredField(reasonCode, "Reason Code");
+        validation.requiredField(reasonCode, REASON_CODE);
         if (validation.hasErrors()) {
             validation.stopOnErrors();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -230,7 +237,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradCertificateTypes>> createGradCertificateTypes(
             @Valid @RequestBody GradCertificateTypes gradCertificateTypes) {
         logger.debug("createGradCertificateTypes : ");
-        validation.requiredField(gradCertificateTypes.getCode(), "Certificate Type Code");
+        validation.requiredField(gradCertificateTypes.getCode(), CERTIFICATE_TYPE_CODE);
         validation.requiredField(gradCertificateTypes.getDescription(), "Certificate Type Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -247,7 +254,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradCertificateTypes>> updateGradCertificateTypes(
             @Valid @RequestBody GradCertificateTypes gradCertificateTypes) {
         logger.info("updateGradCertificateTypes : ");
-        validation.requiredField(gradCertificateTypes.getCode(), "Certificate Type Code");
+        validation.requiredField(gradCertificateTypes.getCode(), CERTIFICATE_TYPE_CODE);
         validation.requiredField(gradCertificateTypes.getDescription(), "Certificate Type Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -263,7 +270,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<Void> deleteGradCertificateTypes(@Valid @PathVariable String certTypeCode) {
         logger.debug("deleteGradCertificateTypes : ");
-        validation.requiredField(certTypeCode, "Certificate Type Code");
+        validation.requiredField(certTypeCode, CERTIFICATE_TYPE_CODE);
         if (validation.hasErrors()) {
             validation.stopOnErrors();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -330,7 +337,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradCareerProgram>> createGradCareerProgram(
             @Valid @RequestBody GradCareerProgram gradCareerProgram) {
         logger.debug("createGradCareerProgram : ");
-        validation.requiredField(gradCareerProgram.getCode(), "Career Program Code");
+        validation.requiredField(gradCareerProgram.getCode(), CAREER_PROGRAM_CODE);
         validation.requiredField(gradCareerProgram.getDescription(), "Career Program Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -347,7 +354,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradCareerProgram>> updateGradCareerProgram(
             @Valid @RequestBody GradCareerProgram gradCareerProgram) {
         logger.info("updateGradCareerProgram : ");
-        validation.requiredField(gradCareerProgram.getCode(), "Career Program Code");
+        validation.requiredField(gradCareerProgram.getCode(), CAREER_PROGRAM_CODE);
         validation.requiredField(gradCareerProgram.getDescription(), "Career Program Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -363,7 +370,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<Void> deleteGradCareerProgram(@Valid @PathVariable String cpCode) {
         logger.debug("deleteGradCareerProgram : ");
-        validation.requiredField(cpCode, "Career Program Code");
+        validation.requiredField(cpCode, CAREER_PROGRAM_CODE);
         if (validation.hasErrors()) {
             validation.stopOnErrors();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -406,7 +413,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradRequirementTypes>> createGradRequirementTypes(
             @Valid @RequestBody GradRequirementTypes gradRequirementTypes) {
         logger.debug("creatGradRequirementTypess : ");
-        validation.requiredField(gradRequirementTypes.getCode(), "Requirement Type Code");
+        validation.requiredField(gradRequirementTypes.getCode(), REQUIREMENT_TYPE_CODE);
         validation.requiredField(gradRequirementTypes.getDescription(), "Requirement Type Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -423,7 +430,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradRequirementTypes>> updateGradRequirementTypes(
             @Valid @RequestBody GradRequirementTypes gradRequirementTypes) {
         logger.info("updateGradRequirementTypes : ");
-        validation.requiredField(gradRequirementTypes.getCode(), "Requirement Type Code");
+        validation.requiredField(gradRequirementTypes.getCode(), REQUIREMENT_TYPE_CODE);
         validation.requiredField(gradRequirementTypes.getDescription(), "Requirement Type Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -439,7 +446,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<Void> deleteGradRequirementTypes(@Valid @PathVariable String typeCode) {
         logger.debug("deleteGradRequirementTypes : ");
-        validation.requiredField(typeCode, "Requirement Type Code");
+        validation.requiredField(typeCode, REQUIREMENT_TYPE_CODE);
         if (validation.hasErrors()) {
             validation.stopOnErrors();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -482,7 +489,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradReportTypes>> createGradReportTypes(
             @Valid @RequestBody GradReportTypes gradReportTypes) {
         logger.debug("createGradReportTypes : ");
-        validation.requiredField(gradReportTypes.getCode(), "Report Type Code");
+        validation.requiredField(gradReportTypes.getCode(), REPORT_TYPE_CODE);
         validation.requiredField(gradReportTypes.getDescription(), "Report Type Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -499,7 +506,7 @@ public class CodeController {
     public ResponseEntity<ApiResponseModel<GradReportTypes>> updateGradReportTypes(
             @Valid @RequestBody GradReportTypes gradReportTypes) {
         logger.info("updateGradReportTypes : ");
-        validation.requiredField(gradReportTypes.getCode(), "Report Type Code");
+        validation.requiredField(gradReportTypes.getCode(), REPORT_TYPE_CODE);
         validation.requiredField(gradReportTypes.getDescription(), "Report Type Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -515,7 +522,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<Void> deleteGradReportTypes(@Valid @PathVariable String reportTypeCode) {
         logger.debug("deleteGradReportTypes : ");
-        validation.requiredField(reportTypeCode, "Report Type Code");
+        validation.requiredField(reportTypeCode, REPORT_TYPE_CODE);
         if (validation.hasErrors()) {
             validation.stopOnErrors();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -560,7 +567,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<ApiResponseModel<StudentStatus>> createStudentStatus(@Valid @RequestBody StudentStatus studentStatus) {
         logger.debug("createStudentStatus : ");
-        validation.requiredField(studentStatus.getCode(), "Status Code");
+        validation.requiredField(studentStatus.getCode(), STATUS_CODE);
         validation.requiredField(studentStatus.getDescription(), "Status Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -576,7 +583,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<ApiResponseModel<StudentStatus>> updateStudentStatusCode(@Valid @RequestBody StudentStatus studentStatus) {
         logger.info("updateStudentStatusCode : ");
-        validation.requiredField(studentStatus.getCode(), "Status Code");
+        validation.requiredField(studentStatus.getCode(), STATUS_CODE);
         validation.requiredField(studentStatus.getDescription(), "Status Description");
         if (validation.hasErrors()) {
             validation.stopOnErrors();
@@ -592,7 +599,7 @@ public class CodeController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public ResponseEntity<Void> deleteStudentStatusCodes(@Valid @PathVariable String statusCode) {
         logger.debug("deleteStudentStatusCodes : ");
-        validation.requiredField(statusCode, "Status Code");
+        validation.requiredField(statusCode, STATUS_CODE);
         if (validation.hasErrors()) {
             validation.stopOnErrors();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
