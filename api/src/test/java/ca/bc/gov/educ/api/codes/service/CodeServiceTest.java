@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.educ.api.codes.model.dto.GradCareerProgram;
@@ -54,7 +53,6 @@ import ca.bc.gov.educ.api.codes.repository.GradReportTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
 import ca.bc.gov.educ.api.codes.repository.StudentStatusRepository;
-import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
 import ca.bc.gov.educ.api.codes.util.GradValidation;
 
 
@@ -143,9 +141,6 @@ public class CodeServiceTest {
     private WebClient.RequestBodyUriSpec requestBodyUriMock;
     @Mock
     private WebClient.ResponseSpec responseMock;
-	
-	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_UNGRAD_REASON_BY_UNGRAD_REASON_CODE_URL)
-    private String getStudentUngradReasonByUngradReasonCodeURL;
 	
 	@Test
 	public void testGetAllProgramList() {
