@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -120,24 +119,8 @@ public class CodeService {
 	@Autowired
 	GradValidation validation;
 	
-	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STUDENT_CERTIFICATE_BY_CERTIFICATE_TYPE_CODE_URL)
-    private String getStudentCertificateByCertificateTypeCodeURL;  
-	
-	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STUDENT_REPORT_BY_REPORT_TYPE_CODE_URL)
-    private String getStudentReportByReportTypeCodeURL; 	
-	
-	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_UNGRAD_REASON_BY_UNGRAD_REASON_CODE_URL)
-    private String getStudentUngradReasonByUngradReasonCodeURL;
-	
-	@Value(EducGradCodeApiConstants.ENDPOINT_STUDENT_CAREER_PROGRAM_BY_CAREER_PROGRAM_CODE_URL)
-    private String getStudentCareerProgramByCareerProgramCodeURL;
-	
-	@Value(EducGradCodeApiConstants.ENDPOINT_REQUIREMENT_TYPE_BY_REQUIREMENT_TYPE_CODE_URL)
-    private String getRequirementTypeByRequirementTypeCodeURL; 
-	
-	@Value(EducGradCodeApiConstants.ENDPOINT_GRAD_STUDENT_STATUS_URL)
-    private String getStudentStatusCodeURL;
-	
+	@Autowired
+	private EducGradCodeApiConstants educGradCodeApiConstants;	
 	
 	@Autowired
 	private StudentStatusRepository studentStatusRepository;
@@ -316,7 +299,7 @@ public class CodeService {
 
 	public int deleteGradUngradReasons(@Valid String reasonCode,String accessToken) {
 		Boolean isPresent = webClient.get()
-				.uri(String.format(getStudentUngradReasonByUngradReasonCodeURL,reasonCode))
+				.uri(String.format(educGradCodeApiConstants.getGradStudentUngradReasonByUngradReasonCode(),reasonCode))
 				.headers(h -> h.setBearerAuth(accessToken))
 				.retrieve()
 				.bodyToMono(boolean.class)
@@ -358,7 +341,7 @@ public class CodeService {
 
 	public int deleteGradCertificateTypes(@Valid String certificateType,String accessToken) {
 		Boolean isPresent = webClient.get()
-				.uri(String.format(getStudentCertificateByCertificateTypeCodeURL,certificateType))
+				.uri(String.format(educGradCodeApiConstants.getGradStudentCertificateByCertificateTypeCode(),certificateType))
 				.headers(h -> h.setBearerAuth(accessToken))
 				.retrieve()
 				.bodyToMono(boolean.class)
@@ -399,7 +382,7 @@ public class CodeService {
 
 	public int deleteGradCareerProgram(@Valid String cpCode, String accessToken) {
 		Boolean isPresent = webClient.get()
-				.uri(String.format(getStudentCareerProgramByCareerProgramCodeURL,cpCode))
+				.uri(String.format(educGradCodeApiConstants.getGradStudentCareerProgramByCareerProgramCode(),cpCode))
 				.headers(h -> h.setBearerAuth(accessToken))
 				.retrieve()
 				.bodyToMono(boolean.class)
@@ -440,7 +423,7 @@ public class CodeService {
 
 	public int deleteGradRequirementTypes(@Valid String programType, String accessToken) {
 		Boolean isPresent = webClient.get()
-				.uri(String.format(getRequirementTypeByRequirementTypeCodeURL,programType))
+				.uri(String.format(educGradCodeApiConstants.getGradRequirementTypeByRequirementTypeCode(),programType))
 				.headers(h -> h.setBearerAuth(accessToken))
 				.retrieve()
 				.bodyToMono(boolean.class)
@@ -496,7 +479,7 @@ public class CodeService {
 
 	public int deleteGradReportTypes(@Valid String reportType,String accessToken) {
 		Boolean isPresent = webClient.get()
-				.uri(String.format(getStudentReportByReportTypeCodeURL,reportType))
+				.uri(String.format(educGradCodeApiConstants.getGradReportTypeByReportTypeCode(),reportType))
 				.headers(h -> h.setBearerAuth(accessToken))
 				.retrieve()
 				.bodyToMono(boolean.class)
@@ -552,7 +535,7 @@ public class CodeService {
 
 	public int deleteStudentStatus(@Valid String statusCode,String accessToken) {
 		Boolean isPresent = webClient.get()
-				.uri(String.format(getStudentStatusCodeURL,statusCode))
+				.uri(String.format(educGradCodeApiConstants.getGradStudentStatusByStatusCode(),statusCode))
 				.headers(h -> h.setBearerAuth(accessToken))
 				.retrieve()
 				.bodyToMono(boolean.class)
