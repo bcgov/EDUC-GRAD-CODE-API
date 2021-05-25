@@ -21,13 +21,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.educ.api.codes.exception.GradBusinessRuleException;
-import ca.bc.gov.educ.api.codes.model.entity.GradCareerProgramEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradCertificateTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradReportTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradRequirementTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradUngradReasonsEntity;
 import ca.bc.gov.educ.api.codes.model.entity.StudentStatusEntity;
-import ca.bc.gov.educ.api.codes.repository.GradCareerProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradReportTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradRequirementTypesRepository;
@@ -74,9 +72,6 @@ public class WebClientTest {
 	private GradReportTypesRepository gradReportTypesRepository;
 	
 	@Autowired
-	private GradCareerProgramRepository gradCareerProgramRepository;
-	
-	@Autowired
 	private GradRequirementTypesRepository gradRequirementTypesRepository;
 	
 	@Autowired
@@ -88,7 +83,6 @@ public class WebClientTest {
         gradUngradReasonsRepository.save(createUngradReasons());
         gradCertificateTypesRepository.save(createCertificateTypes());
         gradReportTypesRepository.save(createReportTypes());
-        gradCareerProgramRepository.save(createCareerPrograms());
         gradRequirementTypesRepository.save(createRequirementTypes());
         studentStatusRepository.save(createStudentStatuses());
     }
@@ -215,34 +209,6 @@ public class WebClientTest {
     }
     
     @Test
-    public void testdeleteCareerProgram_with_APICallReturnsFalse() {
-    	String careerProgram = "AA"; 
-    	when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-    	 when(this.requestHeadersUriMock.uri(String.format(constants.getGradStudentCareerProgramByCareerProgramCode(), careerProgram))).thenReturn(this.requestHeadersMock);
-        when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-        when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-        when(this.responseMock.bodyToMono(boolean.class)).thenReturn(monoResponse);
-        when(this.monoResponse.block()).thenReturn(false);        
-        int success = codeService.deleteGradCareerProgram(careerProgram, "accessToken");
-        assertEquals(1,success);
-        
-    }
-    
-    @Test(expected = GradBusinessRuleException.class)
-    public void testdeleteCareerProgram_with_APICallReturnsTrue() {
-    	String careerProgram = "AA";  
-    	when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
-    	 when(this.requestHeadersUriMock.uri(String.format(constants.getGradStudentCareerProgramByCareerProgramCode(), careerProgram))).thenReturn(this.requestHeadersMock);
-        when(this.requestHeadersMock.headers(any(Consumer.class))).thenReturn(this.requestHeadersMock);
-        when(this.requestHeadersMock.retrieve()).thenReturn(this.responseMock);
-        when(this.responseMock.bodyToMono(boolean.class)).thenReturn(monoResponse);
-        when(this.monoResponse.block()).thenReturn(true);        
-        int success = codeService.deleteGradCareerProgram(careerProgram, "accessToken");
-        assertEquals(0,success);
-        
-    }
-    
-    @Test
     public void testdeleteStudentStatus_with_APICallReturnsFalse() {
     	String studentStatus = "A"; 
     	when(this.webClient.get()).thenReturn(this.requestHeadersUriMock);
@@ -296,17 +262,6 @@ public class WebClientTest {
 		GradRequirementTypesEntity objEntity = new GradRequirementTypesEntity();
 		objEntity.setCode("M");
 		objEntity.setDescription("Match");
-		objEntity.setCreatedBy("GRADUATION");
-		objEntity.setUpdatedBy("GRADUATION");
-		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		return objEntity;
-	}
-
-	private GradCareerProgramEntity createCareerPrograms() {
-		GradCareerProgramEntity objEntity = new GradCareerProgramEntity();
-		objEntity.setCode("AA");
-		objEntity.setDescription("Automobile");
 		objEntity.setCreatedBy("GRADUATION");
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));

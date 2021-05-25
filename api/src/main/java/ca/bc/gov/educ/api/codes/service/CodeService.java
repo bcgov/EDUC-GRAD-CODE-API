@@ -1,6 +1,8 @@
 package ca.bc.gov.educ.api.codes.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +60,6 @@ import ca.bc.gov.educ.api.codes.repository.GradUngradReasonsRepository;
 import ca.bc.gov.educ.api.codes.repository.StudentStatusRepository;
 import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
 import ca.bc.gov.educ.api.codes.util.GradValidation;
-
 @Service
 public class CodeService {
 
@@ -242,7 +243,7 @@ public class CodeService {
 		} catch (Exception e) {
 			logger.debug(String.format(EXCEPTION_MSG,e));
 		}
-
+		Collections.sort(gradCareerProgramList, Comparator.comparing(GradCareerProgram::getCode));
 		return gradCareerProgramList;
 	}
 
@@ -356,46 +357,7 @@ public class CodeService {
 		}
 	}
 
-	public GradCareerProgram createGradCareerProgram(@Valid GradCareerProgram gradCareerProgram) {
-		GradCareerProgramEntity toBeSavedObject = gradCareerProgramTransformer.transformToEntity(gradCareerProgram);
-		Optional<GradCareerProgramEntity> existingObjectCheck = gradCareerProgramRepository.findById(gradCareerProgram.getCode());
-		if(existingObjectCheck.isPresent()) {
-			validation.addErrorAndStop(String.format("Career Program [%s] already exists",gradCareerProgram.getCode()));
-			return gradCareerProgram;			
-		}else {
-			return gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.save(toBeSavedObject));
-		}
-	}
-
-	public GradCareerProgram updateGradCareerProgram(@Valid GradCareerProgram gradCareerProgram) {
-		Optional<GradCareerProgramEntity> gradCareerProgramOptional = gradCareerProgramRepository.findById(gradCareerProgram.getCode());
-		GradCareerProgramEntity sourceObject = gradCareerProgramTransformer.transformToEntity(gradCareerProgram);
-		if(gradCareerProgramOptional.isPresent()) {
-			GradCareerProgramEntity gradEnity = gradCareerProgramOptional.get();			
-			BeanUtils.copyProperties(sourceObject,gradEnity,CREATED_BY,CREATED_TIMESTAMP);
-    		return gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.save(gradEnity));
-		}else {
-			validation.addErrorAndStop(String.format("Career Program [%s] does not exists",gradCareerProgram.getCode()));
-			return gradCareerProgram;
-		}
-	}
-
-	public int deleteGradCareerProgram(@Valid String cpCode, String accessToken) {
-		Boolean isPresent = webClient.get()
-				.uri(String.format(educGradCodeApiConstants.getGradStudentCareerProgramByCareerProgramCode(),cpCode))
-				.headers(h -> h.setBearerAuth(accessToken))
-				.retrieve()
-				.bodyToMono(boolean.class)
-				.block();
-		if(isPresent) {
-			validation.addErrorAndStop(
-					String.format("This Career Program [%s] cannot be deleted as some students have this code associated with them.",cpCode));
-			return 0;
-		}else {
-			gradCareerProgramRepository.deleteById(cpCode);
-			return 1;
-		}
-	}	
+	
 	
 	public GradRequirementTypes createGradRequirementTypes(@Valid GradRequirementTypes gradRequirementTypes) {
 		GradRequirementTypesEntity toBeSavedObject = gradRequirementTypesTransformer.transformToEntity(gradRequirementTypes);
