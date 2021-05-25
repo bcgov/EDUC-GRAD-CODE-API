@@ -13,21 +13,20 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "GRAD_CAREER_PROGRAM")
-public class GradCareerProgramEntity extends BaseEntity {
+@Table(name = "TAB_PRGM")
+public class GradCareerProgramEntity  {
    
 	@Id
-	@Column(name = "CODE", nullable = false)
+	@Column(name = "PRGM_CODE", nullable = false)
     private String code; 
 	
-	@Column(name = "DESCRIPTION", nullable = true)
+	@Column(name = "PRGM_NAME", nullable = true)
     private String description; 
 
-	@Column(name = "START_DT", nullable = true)
+	@Column(name = "START_DATE", nullable = true)
     private Date startDate; 
 	
-	@Column(name = "END_DT", nullable = true)
+	@Column(name = "END_DATE", nullable = true)
     private Date endDate;	
 }

@@ -1,14 +1,9 @@
 package ca.bc.gov.educ.api.codes.controller;
 
-import ca.bc.gov.educ.api.codes.model.dto.*;
-import ca.bc.gov.educ.api.codes.service.CodeService;
-import ca.bc.gov.educ.api.codes.util.*;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +13,38 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
+import ca.bc.gov.educ.api.codes.model.dto.GradCareerProgram;
+import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
+import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
+import ca.bc.gov.educ.api.codes.model.dto.GradMessaging;
+import ca.bc.gov.educ.api.codes.model.dto.GradProgram;
+import ca.bc.gov.educ.api.codes.model.dto.GradProvince;
+import ca.bc.gov.educ.api.codes.model.dto.GradReportTypes;
+import ca.bc.gov.educ.api.codes.model.dto.GradRequirementTypes;
+import ca.bc.gov.educ.api.codes.model.dto.GradUngradReasons;
+import ca.bc.gov.educ.api.codes.model.dto.StudentStatus;
+import ca.bc.gov.educ.api.codes.service.CodeService;
+import ca.bc.gov.educ.api.codes.util.ApiResponseModel;
+import ca.bc.gov.educ.api.codes.util.EducGradCodeApiConstants;
+import ca.bc.gov.educ.api.codes.util.GradValidation;
+import ca.bc.gov.educ.api.codes.util.PermissionsContants;
+import ca.bc.gov.educ.api.codes.util.ResponseHelper;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping(EducGradCodeApiConstants.GRAD_CODE_API_ROOT_MAPPING)
@@ -46,7 +69,6 @@ public class CodeController {
     private static final String REPORT_TYPE_CODE="Report Type Code";
     private static final String REQUIREMENT_TYPE_CODE="Requirement Type Code";
     private static final String CERTIFICATE_TYPE_CODE="Certificate Type Code";
-    private static final String CAREER_PROGRAM_CODE="Career Program Code";
 
     @Autowired
     CodeService codeService;
@@ -329,57 +351,7 @@ public class CodeController {
         }
     }
 
-    @PostMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_MAPPING)
-    @PreAuthorize(PermissionsContants.CREATE_CAREER_PROGRAM)
-    @Operation(summary = "Create a Career Program", description = "Create a Career Program", tags = {"Career Program"})
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
-    public ResponseEntity<ApiResponseModel<GradCareerProgram>> createGradCareerProgram(
-            @Valid @RequestBody GradCareerProgram gradCareerProgram) {
-        logger.debug("createGradCareerProgram : ");
-        validation.requiredField(gradCareerProgram.getCode(), CAREER_PROGRAM_CODE);
-        validation.requiredField(gradCareerProgram.getDescription(), "Career Program Description");
-        if (validation.hasErrors()) {
-            validation.stopOnErrors();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return response.CREATED(codeService.createGradCareerProgram(gradCareerProgram));
-    }
-
-    @PutMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_MAPPING)
-    @PreAuthorize(PermissionsContants.UPDATE_CAREER_PROGRAM)
-    @Operation(summary = "Update a Career Program", description = "Update a Career Program", tags = {"Career Program"})
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
-    public ResponseEntity<ApiResponseModel<GradCareerProgram>> updateGradCareerProgram(
-            @Valid @RequestBody GradCareerProgram gradCareerProgram) {
-        logger.info("updateGradCareerProgram : ");
-        validation.requiredField(gradCareerProgram.getCode(), CAREER_PROGRAM_CODE);
-        validation.requiredField(gradCareerProgram.getDescription(), "Career Program Description");
-        if (validation.hasErrors()) {
-            validation.stopOnErrors();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return response.UPDATED(codeService.updateGradCareerProgram(gradCareerProgram));
-    }
-
-    @DeleteMapping(EducGradCodeApiConstants.GET_ALL_GRAD_CAREER_PROGRAM_BY_CODE_MAPPING)
-    @PreAuthorize(PermissionsContants.DELETE_CAREER_PROGRAM)
-    @Operation(summary = "Delete a Career Program", description = "Delete a Career Program", tags = {"Career Program"})
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
-    public ResponseEntity<Void> deleteGradCareerProgram(@Valid @PathVariable String cpCode) {
-        logger.debug("deleteGradCareerProgram : ");
-        validation.requiredField(cpCode, CAREER_PROGRAM_CODE);
-        if (validation.hasErrors()) {
-            validation.stopOnErrors();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        OAuth2AuthenticationDetails auth =
-                (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        String accessToken = auth.getTokenValue();
-        return response.DELETE(codeService.deleteGradCareerProgram(cpCode, accessToken));
-    }
+   
 
     @GetMapping(EducGradCodeApiConstants.GET_ALL_GRAD_REQUIREMENT_TYPE_CODE_MAPPING)
     @PreAuthorize(PermissionsContants.READ_GRAD_REQUIREMENT_TYPE_CODE)

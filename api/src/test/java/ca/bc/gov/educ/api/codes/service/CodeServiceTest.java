@@ -515,10 +515,6 @@ public class CodeServiceTest {
 		GradCareerProgram obj = new GradCareerProgram();
 		obj.setCode("AY");
 		obj.setDescription("Archaeology");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradCareerProgramList.add(obj);
 		obj = new GradCareerProgram();
 		obj.setCode("BE");
@@ -535,17 +531,9 @@ public class CodeServiceTest {
 		GradCareerProgram obj = new GradCareerProgram();
 		obj.setCode("AY");
 		obj.setDescription("Archaeology");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		GradCareerProgramEntity objEntity = new GradCareerProgramEntity();
 		objEntity.setCode("AY");
 		objEntity.setDescription("Archaeology");
-		objEntity.setCreatedBy("GRADUATION");
-		objEntity.setUpdatedBy("GRADUATION");
-		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradCareerProgramEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradCareerProgramRepository.findById(cpcCode)).thenReturn(ent);
 		codeService.getSpecificCareerProgramCode(cpcCode);
@@ -803,100 +791,7 @@ public class CodeServiceTest {
 	}
 	
 	
-	@Test
-	public void testCreateGradCareerProgram() {
-		GradCareerProgram obj = new GradCareerProgram();
-		obj.setCode("DC");
-		obj.setDescription("Data Correction by School");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		GradCareerProgramEntity objEntity = new GradCareerProgramEntity();
-		objEntity.setCode("DC");
-		objEntity.setDescription("Data Correction by School");
-		objEntity.setCreatedBy("GRADUATION");
-		objEntity.setUpdatedBy("GRADUATION");
-		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradCareerProgramTransformer.transformToEntity(obj)).thenReturn(objEntity);
-		Mockito.when(gradCareerProgramRepository.findById(obj.getCode())).thenReturn(Optional.empty());
-		Mockito.when(gradCareerProgramRepository.save(objEntity)).thenReturn(objEntity);
-		codeService.createGradCareerProgram(obj);
-		Mockito.verify(gradCareerProgramRepository).save(objEntity);
-		
-	}
 	
-	@Test
-	public void testCreateGradCareerProgram_codeAlreadyExists() {
-		GradCareerProgram obj = new GradCareerProgram();
-		obj.setCode("DC");
-		obj.setDescription("Data Correction by School");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		GradCareerProgramEntity objEntity = new GradCareerProgramEntity();
-		objEntity.setCode("DC");
-		objEntity.setDescription("Data Correction by School");
-		objEntity.setCreatedBy("GRADUATION");
-		objEntity.setUpdatedBy("GRADUATION");
-		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Optional<GradCareerProgramEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradCareerProgramTransformer.transformToEntity(obj)).thenReturn(objEntity);
-		Mockito.when(gradCareerProgramRepository.findById(obj.getCode())).thenReturn(ent);
-		codeService.createGradCareerProgram(obj);
-		Mockito.verify(gradCareerProgramRepository).findById(obj.getCode());
-		
-	}
-	
-	@Test
-	public void testUpdateGradCareerProgram() {
-		GradCareerProgram obj = new GradCareerProgram();
-		obj.setCode("DC");
-		obj.setDescription("Data Correction by Schools");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		GradCareerProgramEntity objEntity = new GradCareerProgramEntity();
-		objEntity.setCode("DC");
-		objEntity.setDescription("Data Correction by School");
-		objEntity.setCreatedBy("GRADUATION");
-		objEntity.setUpdatedBy("GRADUATION");
-		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Optional<GradCareerProgramEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradCareerProgramTransformer.transformToEntity(obj)).thenReturn(objEntity);
-		Mockito.when(gradCareerProgramRepository.findById(obj.getCode())).thenReturn(ent);
-		Mockito.when(gradCareerProgramRepository.save(objEntity)).thenReturn(objEntity);
-		codeService.updateGradCareerProgram(obj);
-		Mockito.verify(gradCareerProgramRepository).save(objEntity);
-		
-	}
-	
-	@Test
-	public void testUpdateGradCareerProgram_codeAlreadyExists() {
-		GradCareerProgram obj = new GradCareerProgram();
-		obj.setCode("DC");
-		obj.setDescription("Data Correction by Schools");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		GradCareerProgramEntity objEntity = new GradCareerProgramEntity();
-		objEntity.setCode("DC");
-		objEntity.setDescription("Data Correction by School");
-		objEntity.setCreatedBy("GRADUATION");
-		objEntity.setUpdatedBy("GRADUATION");
-		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradCareerProgramTransformer.transformToEntity(obj)).thenReturn(objEntity);
-		Mockito.when(gradCareerProgramRepository.findById(obj.getCode())).thenReturn(Optional.empty());
-		codeService.updateGradCareerProgram(obj);
-		
-	}
 	
 	@Test
 	public void testCreateGradRequirementTypes() {

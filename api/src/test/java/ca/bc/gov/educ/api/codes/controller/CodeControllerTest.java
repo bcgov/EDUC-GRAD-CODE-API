@@ -429,18 +429,10 @@ public class CodeControllerTest {
 		GradCareerProgram obj = new GradCareerProgram();
 		obj.setCode("DC");
 		obj.setDescription("Data Correction by School");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradCareerProgramList.add(obj);
 		obj = new GradCareerProgram();
 		obj.setCode("CC");
 		obj.setDescription("Courses not complete");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradCareerProgramList.add(obj);
 		Mockito.when(codeService.getAllCareerProgramCodeList()).thenReturn(gradCareerProgramList);
 		codeController.getAllCareerPrograms();
@@ -453,10 +445,6 @@ public class CodeControllerTest {
 		GradCareerProgram obj = new GradCareerProgram();
 		obj.setCode("DC");
 		obj.setDescription("Data Correction by School");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Mockito.when(codeService.getSpecificCareerProgramCode(requirementType)).thenReturn(obj);
 		codeController.getSpecificCareerProgramCode(requirementType);
 		Mockito.verify(codeService).getSpecificCareerProgramCode(requirementType);
@@ -730,48 +718,5 @@ public class CodeControllerTest {
 		Mockito.when(codeService.deleteGradRequirementTypes(statusCode,null)).thenReturn(1);
 		codeController.deleteGradRequirementTypes(statusCode);
 		Mockito.verify(codeService).deleteGradRequirementTypes(statusCode,null);
-	}
-	
-	@Test
-	public void testCreateGradCareerProgram() {
-		GradCareerProgram obj = new GradCareerProgram();
-		obj.setCode("DC");
-		obj.setDescription("Data Correction by School");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(codeService.createGradCareerProgram(obj)).thenReturn(obj);
-		codeController.createGradCareerProgram(obj);
-		Mockito.verify(codeService).createGradCareerProgram(obj);
-	}
-	
-	@Test
-	public void testUpdateGradCareerProgram() {
-		GradCareerProgram obj = new GradCareerProgram();
-		obj.setCode("DC");
-		obj.setDescription("Data Correction by School");
-		obj.setCreatedBy("GRADUATION");
-		obj.setUpdatedBy("GRADUATION");
-		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
-		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(codeService.updateGradCareerProgram(obj)).thenReturn(obj);
-		codeController.updateGradCareerProgram(obj);
-		Mockito.verify(codeService).updateGradCareerProgram(obj);
-	}
-	
-	@Test
-	public void testDeleteGradCareerProgram() {
-		String statusCode = "DC";
-		Authentication authentication = Mockito.mock(Authentication.class);
-		OAuth2AuthenticationDetails details = Mockito.mock(OAuth2AuthenticationDetails.class);
-		// Mockito.whens() for your authorization object
-		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-		Mockito.when(authentication.getDetails()).thenReturn(details);
-		SecurityContextHolder.setContext(securityContext);
-		Mockito.when(codeService.deleteGradCareerProgram(statusCode,null)).thenReturn(1);
-		codeController.deleteGradCareerProgram(statusCode);
-		Mockito.verify(codeService).deleteGradCareerProgram(statusCode,null);
 	}
 }
