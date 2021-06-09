@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import ca.bc.gov.educ.api.codes.exception.GradBusinessRuleException;
 import ca.bc.gov.educ.api.codes.model.dto.GradCareerProgram;
 import ca.bc.gov.educ.api.codes.model.dto.GradCertificateTypes;
 import ca.bc.gov.educ.api.codes.model.dto.GradCountry;
@@ -33,16 +35,6 @@ import ca.bc.gov.educ.api.codes.model.entity.GradReportTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradRequirementTypesEntity;
 import ca.bc.gov.educ.api.codes.model.entity.GradUngradReasonsEntity;
 import ca.bc.gov.educ.api.codes.model.entity.StudentStatusEntity;
-import ca.bc.gov.educ.api.codes.model.transformer.GradCareerProgramTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradCertificateTypesTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradCountryTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradMessagingTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradProgramTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradProvinceTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradReportTypesTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradRequirementTypesTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.GradUngradReasonsTransformer;
-import ca.bc.gov.educ.api.codes.model.transformer.StudentStatusTransformer;
 import ca.bc.gov.educ.api.codes.repository.GradCareerProgramRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCertificateTypesRepository;
 import ca.bc.gov.educ.api.codes.repository.GradCountryRepository;
@@ -56,108 +48,63 @@ import ca.bc.gov.educ.api.codes.repository.StudentStatusRepository;
 import ca.bc.gov.educ.api.codes.util.GradValidation;
 
 
-@ExtendWith(MockitoExtension.class)
-@SuppressWarnings("rawtypes")
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@ActiveProfiles("test")
+@SuppressWarnings({"rawtypes"})
 public class CodeServiceTest {
 
-	@InjectMocks
+	@Autowired
 	private CodeService codeService;
 	
-	@Mock
-	private GradProgramTransformer gradProgramTransformer;
-	
-	@Mock
-	private GradProgramRepository gradProgramRepository;
-	
-	@Mock
-	private GradCountryTransformer gradCountryTransformer;
+	@MockBean
+	private GradProgramRepository gradProgramRepository;	
 
-	@Mock
-	private GradProvinceTransformer gradProvinceTransformer;
-
-	@Mock
+	@MockBean
 	private GradCountryRepository gradCountryRepository;
 
-	@Mock
+	@MockBean
 	private GradProvinceRepository gradProvinceRepository;
 	
-	@Mock
+	@MockBean
 	private GradUngradReasonsRepository gradUngradReasonsRepository;
 
-	@Mock
-	private GradUngradReasonsTransformer gradUngradReasonsTransformer;
-	
-	@Mock
+	@MockBean
 	private GradCertificateTypesRepository gradCertificateTypesRepository;
 
-	@Mock
-	private GradCertificateTypesTransformer gradCertificateTypesTransformer;
-	
-	@Mock
+	@MockBean
 	private GradReportTypesRepository gradReportTypesRepository;
 
-	@Mock
-	private GradReportTypesTransformer gradReportTypesTransformer;
-	
-	@Mock
+	@MockBean
 	private GradMessagingRepository gradMessagingRepository;
 
-	@Mock
-	private GradMessagingTransformer gradMessagingTransformer;
-	
-	@Mock
+	@MockBean
 	private GradCareerProgramRepository gradCareerProgramRepository;
 
-	@Mock
-	private GradCareerProgramTransformer gradCareerProgramTransformer;
-	
-
-	@Mock
+	@MockBean
 	private GradRequirementTypesRepository gradRequirementTypesRepository;
 
-	@Mock
-	private GradRequirementTypesTransformer gradRequirementTypesTransformer;
-	
-	@Mock
+	@MockBean
 	private StudentStatusRepository studentStatusRepository;
 
-	@Mock
-	private StudentStatusTransformer studentStatusTransformer;
-	
-	@Mock
+	@Autowired
 	GradValidation validation;
-	
-	@Mock
-	WebClient webClient;
-	
-	
-	@Mock
-    private WebClient.RequestHeadersSpec requestHeadersMock;
-    @Mock
-    private WebClient.RequestHeadersUriSpec requestHeadersUriMock;
-    @Mock
-    private WebClient.RequestBodySpec requestBodyMock;
-    @Mock
-    private WebClient.RequestBodyUriSpec requestBodyUriMock;
-    @Mock
-    private WebClient.ResponseSpec responseMock;
 	
 	@Test
 	public void testGetAllProgramList() {
-		List<GradProgram> gradProgramList = new ArrayList<>();
-		GradProgram obj = new GradProgram();
+		List<GradProgramEntity> gradProgramList = new ArrayList<>();
+		GradProgramEntity obj = new GradProgramEntity();
 		obj.setProgramCode("AB");
 		obj.setProgramName("Autobody");
 		obj.setProgramStartDate(new Date(System.currentTimeMillis()));
 		gradProgramList.add(obj);
-		obj = new GradProgram();
+		obj = new GradProgramEntity();
 		obj.setProgramCode("AC");
 		obj.setProgramName("Autobody");
 		obj.setProgramStartDate(new Date(System.currentTimeMillis()));
 		gradProgramList.add(obj);
-		Mockito.when(gradProgramTransformer.transformToDTO(gradProgramRepository.findAll())).thenReturn(gradProgramList);
+		Mockito.when(gradProgramRepository.findAll()).thenReturn(gradProgramList);
 		codeService.getAllProgramList();
-		Mockito.verify(gradProgramTransformer).transformToDTO(gradProgramRepository.findAll());
 	}
 	
 	@Test
@@ -167,6 +114,7 @@ public class CodeServiceTest {
 		obj.setProgramCode("AB");
 		obj.setProgramName("Autobody");
 		obj.setProgramStartDate(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradProgramEntity objEntity = new GradProgramEntity();
 		objEntity.setProgramCode("AB");
 		objEntity.setProgramName("Autobody");
@@ -174,7 +122,6 @@ public class CodeServiceTest {
 		Optional<GradProgramEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradProgramRepository.findById(programCode)).thenReturn(ent);
 		codeService.getSpecificProgramCode(programCode);
-		Mockito.verify(gradProgramRepository).findById(programCode);
 	}
 	
 	@Test
@@ -182,23 +129,22 @@ public class CodeServiceTest {
 		String programCode = "AB";
 		Mockito.when(gradProgramRepository.findById(programCode)).thenReturn(Optional.empty());
 		codeService.getSpecificProgramCode(programCode);
-		Mockito.verify(gradProgramRepository).findById(programCode);
 	}
 	
 	@Test
 	public void testGetAllProvinceList() {
-		List<GradProvince> gradProvinceList = new ArrayList<>();
-		GradProvince obj = new GradProvince();
+		List<GradProvinceEntity> gradProvinceList = new ArrayList<>();
+		GradProvinceEntity obj = new GradProvinceEntity();
 		obj.setProvCode("BC");
 		obj.setProvName("British Columbia");
 		gradProvinceList.add(obj);
-		obj = new GradProvince();
+		obj = new GradProvinceEntity();
 		obj.setProvCode("AB");
 		obj.setProvName("Alberta");
 		gradProvinceList.add(obj);
-		Mockito.when(gradProvinceTransformer.transformToDTO(gradProvinceRepository.findAll())).thenReturn(gradProvinceList);
+		Mockito.when(gradProvinceRepository.findAll()).thenReturn(gradProvinceList);
 		codeService.getAllProvinceCodeList();
-		Mockito.verify(gradProvinceTransformer).transformToDTO(gradProvinceRepository.findAll());
+		
 	}
 	
 	@Test
@@ -207,13 +153,13 @@ public class CodeServiceTest {
 		GradProvince obj = new GradProvince();
 		obj.setProvCode("BC");
 		obj.setProvName("British Columbia");
+		obj.toString();
 		GradProvinceEntity objEntity = new GradProvinceEntity();
 		objEntity.setProvCode("BC");
 		objEntity.setProvName("British Columbia");
 		Optional<GradProvinceEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradProvinceRepository.findById(provCode)).thenReturn(ent);
 		codeService.getSpecificProvinceCode(provCode);
-		Mockito.verify(gradProvinceRepository).findById(provCode);
 	}
 	
 	@Test
@@ -221,23 +167,21 @@ public class CodeServiceTest {
 		String provCode = "BC";
 		Mockito.when(gradProvinceRepository.findById(provCode)).thenReturn(Optional.empty());
 		codeService.getSpecificProvinceCode(provCode);
-		Mockito.verify(gradProvinceRepository).findById(provCode);
 	}
 	
 	@Test
 	public void testGetAllCountryList() {
-		List<GradCountry> gradCountryList = new ArrayList<>();
-		GradCountry obj = new GradCountry();
+		List<GradCountryEntity> gradCountryList = new ArrayList<>();
+		GradCountryEntity obj = new GradCountryEntity();
 		obj.setCountryCode("CA");
 		obj.setCountryName("Canada");
 		gradCountryList.add(obj);
-		obj = new GradCountry();
+		obj = new GradCountryEntity();
 		obj.setCountryCode("USA");
 		obj.setCountryName("America");
 		gradCountryList.add(obj);
-		Mockito.when(gradCountryTransformer.transformToDTO(gradCountryRepository.findAll())).thenReturn(gradCountryList);
+		Mockito.when(gradCountryRepository.findAll()).thenReturn(gradCountryList);
 		codeService.getAllCountryCodeList();
-		Mockito.verify(gradCountryTransformer).transformToDTO(gradCountryRepository.findAll());
 	}
 	
 	@Test
@@ -246,13 +190,13 @@ public class CodeServiceTest {
 		GradCountry obj = new GradCountry();
 		obj.setCountryCode("CA");
 		obj.setCountryName("Canada");
+		obj.toString();
 		GradCountryEntity objEntity = new GradCountryEntity();
 		objEntity.setCountryCode("CA");
 		objEntity.setCountryName("Canada");
 		Optional<GradCountryEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradCountryRepository.findById(countryCode)).thenReturn(ent);
 		codeService.getSpecificCountryCode(countryCode);
-		Mockito.verify(gradCountryRepository).findById(countryCode);
 	}
 	
 	@Test
@@ -260,13 +204,12 @@ public class CodeServiceTest {
 		String countryCode = "CA";
 		Mockito.when(gradCountryRepository.findById(countryCode)).thenReturn(Optional.empty());
 		codeService.getSpecificCountryCode(countryCode);
-		Mockito.verify(gradCountryRepository).findById(countryCode);
 	}
 	
 	@Test
 	public void testGetAllUngradReasonCodeList() {
-		List<GradUngradReasons> gradUngradReasonList = new ArrayList<>();
-		GradUngradReasons obj = new GradUngradReasons();
+		List<GradUngradReasonsEntity> gradUngradReasonList = new ArrayList<>();
+		GradUngradReasonsEntity obj = new GradUngradReasonsEntity();
 		obj.setCode("DC");
 		obj.setDescription("Data Correction by School");
 		obj.setCreatedBy("GRADUATION");
@@ -274,7 +217,7 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradUngradReasonList.add(obj);
-		obj = new GradUngradReasons();
+		obj = new GradUngradReasonsEntity();
 		obj.setCode("CC");
 		obj.setDescription("Courses not complete");
 		obj.setCreatedBy("GRADUATION");
@@ -282,9 +225,8 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradUngradReasonList.add(obj);
-		Mockito.when(gradUngradReasonsTransformer.transformToDTO(gradUngradReasonsRepository.findAll())).thenReturn(gradUngradReasonList);
+		Mockito.when(gradUngradReasonsRepository.findAll()).thenReturn(gradUngradReasonList);
 		codeService.getAllUngradReasonCodeList();
-		Mockito.verify(gradUngradReasonsTransformer).transformToDTO(gradUngradReasonsRepository.findAll());
 	}
 	
 	@Test
@@ -297,6 +239,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradUngradReasonsEntity objEntity = new GradUngradReasonsEntity();
 		objEntity.setCode("DC");
 		objEntity.setDescription("Data Correction by School");
@@ -307,7 +250,6 @@ public class CodeServiceTest {
 		Optional<GradUngradReasonsEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradUngradReasonsRepository.findById(reasonCode)).thenReturn(ent);
 		codeService.getSpecificUngradReasonCode(reasonCode);
-		Mockito.verify(gradUngradReasonsRepository).findById(reasonCode);
 	}
 	
 	@Test
@@ -315,13 +257,12 @@ public class CodeServiceTest {
 		String reasonCode = "DC";
 		Mockito.when(gradUngradReasonsRepository.findById(reasonCode)).thenReturn(Optional.empty());
 		codeService.getSpecificUngradReasonCode(reasonCode);
-		Mockito.verify(gradUngradReasonsRepository).findById(reasonCode);
 	}
 	
 	@Test
 	public void testGetAllCertificateTypesCodeList() {
-		List<GradCertificateTypes> gradCertificateTypeList = new ArrayList<>();
-		GradCertificateTypes obj = new GradCertificateTypes();
+		List<GradCertificateTypesEntity> gradCertificateTypeList = new ArrayList<>();
+		GradCertificateTypesEntity obj = new GradCertificateTypesEntity();
 		obj.setCode("E");
 		obj.setDescription("English Dogwood");
 		obj.setCreatedBy("GRADUATION");
@@ -329,7 +270,7 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradCertificateTypeList.add(obj);
-		obj = new GradCertificateTypes();
+		obj = new GradCertificateTypesEntity();
 		obj.setCode("F");
 		obj.setDescription("French Dogwood");
 		obj.setCreatedBy("GRADUATION");
@@ -337,9 +278,8 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradCertificateTypeList.add(obj);
-		Mockito.when(gradCertificateTypesTransformer.transformToDTO(gradCertificateTypesRepository.findAll())).thenReturn(gradCertificateTypeList);
+		Mockito.when(gradCertificateTypesRepository.findAll()).thenReturn(gradCertificateTypeList);
 		codeService.getAllCertificateTypeCodeList();
-		Mockito.verify(gradCertificateTypesTransformer).transformToDTO(gradCertificateTypesRepository.findAll());
 	}
 	
 	@Test
@@ -352,6 +292,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradCertificateTypesEntity objEntity = new GradCertificateTypesEntity();
 		objEntity.setCode("E");
 		objEntity.setDescription("English Dogwood");
@@ -362,7 +303,6 @@ public class CodeServiceTest {
 		Optional<GradCertificateTypesEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradCertificateTypesRepository.findById(certCode)).thenReturn(ent);
 		codeService.getSpecificCertificateTypeCode(certCode);
-		Mockito.verify(gradCertificateTypesRepository).findById(certCode);
 	}
 	
 	@Test
@@ -370,13 +310,12 @@ public class CodeServiceTest {
 		String certCode = "E";
 		Mockito.when(gradCertificateTypesRepository.findById(certCode)).thenReturn(Optional.empty());
 		codeService.getSpecificCertificateTypeCode(certCode);
-		Mockito.verify(gradCertificateTypesRepository).findById(certCode);
 	}
 	
 	@Test
 	public void testGetAllReportTypesCodeList() {
-		List<GradReportTypes> gradReportTypeList = new ArrayList<>();
-		GradReportTypes obj = new GradReportTypes();
+		List<GradReportTypesEntity> gradReportTypeList = new ArrayList<>();
+		GradReportTypesEntity obj = new GradReportTypesEntity();
 		obj.setCode("TRAN");
 		obj.setDescription("Transcript");
 		obj.setCreatedBy("GRADUATION");
@@ -384,7 +323,7 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradReportTypeList.add(obj);
-		obj = new GradReportTypes();
+		obj = new GradReportTypesEntity();
 		obj.setCode("ACHV");
 		obj.setDescription("Achievement");
 		obj.setCreatedBy("GRADUATION");
@@ -392,9 +331,8 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradReportTypeList.add(obj);
-		Mockito.when(gradReportTypesTransformer.transformToDTO(gradReportTypesRepository.findAll())).thenReturn(gradReportTypeList);
+		Mockito.when(gradReportTypesRepository.findAll()).thenReturn(gradReportTypeList);
 		codeService.getAllReportTypeCodeList();
-		Mockito.verify(gradReportTypesTransformer).transformToDTO(gradReportTypesRepository.findAll());
 	}
 	
 	@Test
@@ -407,6 +345,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradReportTypesEntity objEntity = new GradReportTypesEntity();
 		objEntity.setCode("TRAN");
 		objEntity.setDescription("Transcript");
@@ -417,7 +356,6 @@ public class CodeServiceTest {
 		Optional<GradReportTypesEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradReportTypesRepository.findById(reportCode)).thenReturn(ent);
 		codeService.getSpecificReportTypeCode(reportCode);
-		Mockito.verify(gradReportTypesRepository).findById(reportCode);
 	}
 	
 	@Test
@@ -425,13 +363,12 @@ public class CodeServiceTest {
 		String reportCode = "TRAN";
 		Mockito.when(gradReportTypesRepository.findById(reportCode)).thenReturn(Optional.empty());
 		codeService.getSpecificReportTypeCode(reportCode);
-		Mockito.verify(gradReportTypesRepository).findById(reportCode);
 	}
 	
 	@Test
 	public void testGetAllMessagingCodeList() {
-		List<GradMessaging> gradMessageList = new ArrayList<>();
-		GradMessaging obj = new GradMessaging();
+		List<GradMessagingEntity> gradMessageList = new ArrayList<>();
+		GradMessagingEntity obj = new GradMessagingEntity();
 		obj.setProgramCode("2018-EN");
 		obj.setMessageType("GRADUATED");
 		obj.setAdIBPrograms("A");
@@ -444,8 +381,9 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		
 		gradMessageList.add(obj);
-		obj = new GradMessaging();
+		obj = new GradMessagingEntity();
 		obj.setProgramCode("2018-PF");
 		obj.setMessageType("GRADUATED");
 		obj.setAdIBPrograms("A");
@@ -459,9 +397,8 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradMessageList.add(obj);
-		Mockito.when(gradMessagingTransformer.transformToDTO(gradMessagingRepository.findAll())).thenReturn(gradMessageList);
+		Mockito.when(gradMessagingRepository.findAll()).thenReturn(gradMessageList);
 		codeService.getAllGradMessagingList();
-		Mockito.verify(gradMessagingTransformer).transformToDTO(gradMessagingRepository.findAll());
 	}
 	
 	@Test
@@ -481,6 +418,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradMessagingEntity objEntity = new GradMessagingEntity();
 		objEntity.setProgramCode("2018-EN");
 		objEntity.setMessageType("GRADUATED");
@@ -497,7 +435,7 @@ public class CodeServiceTest {
 		Optional<GradMessagingEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradMessagingRepository.findByProgramCodeAndMessageType(programCode,msgType)).thenReturn(ent);
 		codeService.getSpecificGradMessagingCode(programCode,msgType);
-		Mockito.verify(gradMessagingRepository).findByProgramCodeAndMessageType(programCode,msgType);
+		
 	}
 	
 	@Test
@@ -506,23 +444,22 @@ public class CodeServiceTest {
 		String msgType = "GRADUATED";
 		Mockito.when(gradMessagingRepository.findByProgramCodeAndMessageType(programCode,msgType)).thenReturn(Optional.empty());
 		codeService.getSpecificGradMessagingCode(programCode,msgType);
-		Mockito.verify(gradMessagingRepository).findByProgramCodeAndMessageType(programCode,msgType);
+		
 	}
 	
 	@Test
 	public void testGetAllCareerProgramsCodeList() {
-		List<GradCareerProgram> gradCareerProgramList = new ArrayList<>();
-		GradCareerProgram obj = new GradCareerProgram();
+		List<GradCareerProgramEntity> gradCareerProgramList = new ArrayList<>();
+		GradCareerProgramEntity obj = new GradCareerProgramEntity();
 		obj.setCode("AY");
 		obj.setDescription("Archaeology");
 		gradCareerProgramList.add(obj);
-		obj = new GradCareerProgram();
+		obj = new GradCareerProgramEntity();
 		obj.setCode("BE");
 		obj.setDescription("Business Education");
 		gradCareerProgramList.add(obj);
-		Mockito.when(gradCareerProgramTransformer.transformToDTO(gradCareerProgramRepository.findAll())).thenReturn(gradCareerProgramList);
+		Mockito.when(gradCareerProgramRepository.findAll()).thenReturn(gradCareerProgramList);
 		codeService.getAllCareerProgramCodeList();
-		Mockito.verify(gradCareerProgramTransformer).transformToDTO(gradCareerProgramRepository.findAll());
 	}
 	
 	@Test
@@ -531,13 +468,13 @@ public class CodeServiceTest {
 		GradCareerProgram obj = new GradCareerProgram();
 		obj.setCode("AY");
 		obj.setDescription("Archaeology");
+		obj.toString();
 		GradCareerProgramEntity objEntity = new GradCareerProgramEntity();
 		objEntity.setCode("AY");
 		objEntity.setDescription("Archaeology");
 		Optional<GradCareerProgramEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradCareerProgramRepository.findById(cpcCode)).thenReturn(ent);
 		codeService.getSpecificCareerProgramCode(cpcCode);
-		Mockito.verify(gradCareerProgramRepository).findById(cpcCode);
 	}
 	
 	@Test
@@ -545,13 +482,12 @@ public class CodeServiceTest {
 		String cpcCode = "AZ";
 		Mockito.when(gradCareerProgramRepository.findById(cpcCode)).thenReturn(Optional.empty());
 		codeService.getSpecificCareerProgramCode(cpcCode);
-		Mockito.verify(gradCareerProgramRepository).findById(cpcCode);
 	}
 	
 	@Test
 	public void testGetAllRequirementTypesCodeList() {
-		List<GradRequirementTypes> gradRequirementTypesList = new ArrayList<>();
-		GradRequirementTypes obj = new GradRequirementTypes();
+		List<GradRequirementTypesEntity> gradRequirementTypesList = new ArrayList<>();
+		GradRequirementTypesEntity obj = new GradRequirementTypesEntity();
 		obj.setCode("M");
 		obj.setDescription("MATCH");
 		obj.setCreatedBy("GRADUATION");
@@ -559,13 +495,12 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradRequirementTypesList.add(obj);
-		obj = new GradRequirementTypes();
+		obj = new GradRequirementTypesEntity();
 		obj.setCode("MC");
 		obj.setDescription("MINCREDITS");
 		gradRequirementTypesList.add(obj);
-		Mockito.when(gradRequirementTypesTransformer.transformToDTO(gradRequirementTypesRepository.findAll())).thenReturn(gradRequirementTypesList);
+		Mockito.when(gradRequirementTypesRepository.findAll()).thenReturn(gradRequirementTypesList);
 		codeService.getAllRequirementTypeCodeList();
-		Mockito.verify(gradRequirementTypesTransformer).transformToDTO(gradRequirementTypesRepository.findAll());
 	}
 	
 	@Test
@@ -578,6 +513,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradRequirementTypesEntity objEntity = new GradRequirementTypesEntity();
 		objEntity.setCode("M");
 		objEntity.setDescription("MATCH");
@@ -588,7 +524,6 @@ public class CodeServiceTest {
 		Optional<GradRequirementTypesEntity> ent = Optional.of(objEntity);
 		Mockito.when(gradRequirementTypesRepository.findById(reqType)).thenReturn(ent);
 		codeService.getSpecificRequirementTypeCode(reqType);
-		Mockito.verify(gradRequirementTypesRepository).findById(reqType);
 	}
 	
 	@Test
@@ -596,7 +531,6 @@ public class CodeServiceTest {
 		String reqType = "E";
 		Mockito.when(gradRequirementTypesRepository.findById(reqType)).thenReturn(Optional.empty());
 		codeService.getSpecificRequirementTypeCode(reqType);
-		Mockito.verify(gradRequirementTypesRepository).findById(reqType);
 	}
 	
 	@Test
@@ -615,15 +549,13 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradUngradReasonsTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradUngradReasonsRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		Mockito.when(gradUngradReasonsRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.createGradUngradReasons(obj);
-		Mockito.verify(gradUngradReasonsRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testCreateGradUngradReasons_codeAlreadyExists() {
 		GradUngradReasons obj = new GradUngradReasons();
 		obj.setCode("DC");
@@ -640,10 +572,8 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradUngradReasonsEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradUngradReasonsTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradUngradReasonsRepository.findById(obj.getCode())).thenReturn(ent);
 		codeService.createGradUngradReasons(obj);
-		Mockito.verify(gradUngradReasonsRepository).findById(obj.getCode());
 		
 	}
 	
@@ -664,15 +594,13 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradUngradReasonsEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradUngradReasonsTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradUngradReasonsRepository.findById(obj.getCode())).thenReturn(ent);
 		Mockito.when(gradUngradReasonsRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.updateGradUngradReasons(obj);
-		Mockito.verify(gradUngradReasonsRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testUpdateGradUngradReasons_codeAlreadyExists() {
 		GradUngradReasons obj = new GradUngradReasons();
 		obj.setCode("DC");
@@ -688,7 +616,6 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradUngradReasonsTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradUngradReasonsRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		codeService.updateGradUngradReasons(obj);
 		
@@ -711,15 +638,13 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradCertificateTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradCertificateTypesRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		Mockito.when(gradCertificateTypesRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.createGradCertificateTypes(obj);
-		Mockito.verify(gradCertificateTypesRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testCreateGradCertificateTypes_codeAlreadyExists() {
 		GradCertificateTypes obj = new GradCertificateTypes();
 		obj.setCode("DC");
@@ -736,10 +661,8 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradCertificateTypesEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradCertificateTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradCertificateTypesRepository.findById(obj.getCode())).thenReturn(ent);
 		codeService.createGradCertificateTypes(obj);
-		Mockito.verify(gradCertificateTypesRepository).findById(obj.getCode());
 		
 	}
 	
@@ -760,15 +683,12 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradCertificateTypesEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradCertificateTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradCertificateTypesRepository.findById(obj.getCode())).thenReturn(ent);
 		Mockito.when(gradCertificateTypesRepository.save(objEntity)).thenReturn(objEntity);
-		codeService.updateGradCertificateTypes(obj);
-		Mockito.verify(gradCertificateTypesRepository).save(objEntity);
-		
+		codeService.updateGradCertificateTypes(obj);		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testUpdateGradCertificateTypes_codeAlreadyExists() {
 		GradCertificateTypes obj = new GradCertificateTypes();
 		obj.setCode("DC");
@@ -777,6 +697,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradCertificateTypesEntity objEntity = new GradCertificateTypesEntity();
 		objEntity.setCode("DC");
 		objEntity.setDescription("Data Correction by School");
@@ -784,7 +705,6 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradCertificateTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradCertificateTypesRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		codeService.updateGradCertificateTypes(obj);
 		
@@ -802,6 +722,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		GradRequirementTypesEntity objEntity = new GradRequirementTypesEntity();
 		objEntity.setCode("DC");
 		objEntity.setDescription("Data Correction by School");
@@ -809,15 +730,13 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradRequirementTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradRequirementTypesRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		Mockito.when(gradRequirementTypesRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.createGradRequirementTypes(obj);
-		Mockito.verify(gradRequirementTypesRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testCreateGradRequirementTypes_codeAlreadyExists() {
 		GradRequirementTypes obj = new GradRequirementTypes();
 		obj.setCode("DC");
@@ -834,10 +753,8 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradRequirementTypesEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradRequirementTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradRequirementTypesRepository.findById(obj.getCode())).thenReturn(ent);
 		codeService.createGradRequirementTypes(obj);
-		Mockito.verify(gradRequirementTypesRepository).findById(obj.getCode());
 		
 	}
 	
@@ -858,15 +775,13 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradRequirementTypesEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradRequirementTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradRequirementTypesRepository.findById(obj.getCode())).thenReturn(ent);
 		Mockito.when(gradRequirementTypesRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.updateGradRequirementTypes(obj);
-		Mockito.verify(gradRequirementTypesRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testUpdateGradRequirementTypes_codeAlreadyExists() {
 		GradRequirementTypes obj = new GradRequirementTypes();
 		obj.setCode("DC");
@@ -882,7 +797,6 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradRequirementTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradRequirementTypesRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		codeService.updateGradRequirementTypes(obj);
 		
@@ -904,15 +818,13 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradReportTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradReportTypesRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		Mockito.when(gradReportTypesRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.createGradReportTypes(obj);
-		Mockito.verify(gradReportTypesRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testCreateGradReportTypes_codeAlreadyExists() {
 		GradReportTypes obj = new GradReportTypes();
 		obj.setCode("DC");
@@ -929,10 +841,8 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradReportTypesEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradReportTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradReportTypesRepository.findById(obj.getCode())).thenReturn(ent);
 		codeService.createGradReportTypes(obj);
-		Mockito.verify(gradReportTypesRepository).findById(obj.getCode());
 		
 	}
 	
@@ -953,15 +863,13 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<GradReportTypesEntity> ent = Optional.of(objEntity);
-		Mockito.when(gradReportTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradReportTypesRepository.findById(obj.getCode())).thenReturn(ent);
 		Mockito.when(gradReportTypesRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.updateGradReportTypes(obj);
-		Mockito.verify(gradReportTypesRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testUpdateGradReportTypes_codeAlreadyExists() {
 		GradReportTypes obj = new GradReportTypes();
 		obj.setCode("DC");
@@ -977,7 +885,6 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(gradReportTypesTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(gradReportTypesRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		codeService.updateGradReportTypes(obj);
 		
@@ -985,8 +892,8 @@ public class CodeServiceTest {
 	
 	@Test
 	public void testGetAllStudentStatusCodeList() {
-		List<StudentStatus> gradStudentStatusList = new ArrayList<>();
-		StudentStatus obj = new StudentStatus();
+		List<StudentStatusEntity> gradStudentStatusList = new ArrayList<>();
+		StudentStatusEntity obj = new StudentStatusEntity();
 		obj.setCode("DC");
 		obj.setDescription("Data Correction by School");
 		obj.setCreatedBy("GRADUATION");
@@ -994,7 +901,7 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradStudentStatusList.add(obj);
-		obj = new StudentStatus();
+		obj = new StudentStatusEntity();
 		obj.setCode("CC");
 		obj.setDescription("Courses not complete");
 		obj.setCreatedBy("GRADUATION");
@@ -1002,9 +909,8 @@ public class CodeServiceTest {
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		gradStudentStatusList.add(obj);
-		Mockito.when(studentStatusTransformer.transformToDTO(studentStatusRepository.findAll())).thenReturn(gradStudentStatusList);
+		Mockito.when(studentStatusRepository.findAll()).thenReturn(gradStudentStatusList);
 		codeService.getAllStudentStatusCodeList();
-		Mockito.verify(studentStatusTransformer).transformToDTO(studentStatusRepository.findAll());
 	}
 	
 	@Test
@@ -1017,6 +923,7 @@ public class CodeServiceTest {
 		obj.setUpdatedBy("GRADUATION");
 		obj.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		obj.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
+		obj.toString();
 		StudentStatusEntity objEntity = new StudentStatusEntity();
 		objEntity.setCode("DC");
 		objEntity.setDescription("Data Correction by School");
@@ -1027,7 +934,6 @@ public class CodeServiceTest {
 		Optional<StudentStatusEntity> ent = Optional.of(objEntity);
 		Mockito.when(studentStatusRepository.findById(reasonCode)).thenReturn(ent);
 		codeService.getSpecificStudentStatusCode(reasonCode);
-		Mockito.verify(studentStatusRepository).findById(reasonCode);
 	}
 	
 	@Test
@@ -1035,7 +941,6 @@ public class CodeServiceTest {
 		String reasonCode = "DC";
 		Mockito.when(studentStatusRepository.findById(reasonCode)).thenReturn(Optional.empty());
 		codeService.getSpecificStudentStatusCode(reasonCode);
-		Mockito.verify(studentStatusRepository).findById(reasonCode);
 	}
 	
 	@Test
@@ -1054,15 +959,13 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(studentStatusTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(studentStatusRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		Mockito.when(studentStatusRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.createStudentStatus(obj);
-		Mockito.verify(studentStatusRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testCreateStudentStatus_codeAlreadyExists() {
 		StudentStatus obj = new StudentStatus();
 		obj.setCode("DC");
@@ -1079,10 +982,8 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<StudentStatusEntity> ent = Optional.of(objEntity);
-		Mockito.when(studentStatusTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(studentStatusRepository.findById(obj.getCode())).thenReturn(ent);
 		codeService.createStudentStatus(obj);
-		Mockito.verify(studentStatusRepository).findById(obj.getCode());
 		
 	}
 	
@@ -1103,11 +1004,9 @@ public class CodeServiceTest {
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<StudentStatusEntity> ent = Optional.of(objEntity);
-		Mockito.when(studentStatusTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(studentStatusRepository.findById(obj.getCode())).thenReturn(ent);
 		Mockito.when(studentStatusRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.updateStudentStatus(obj);
-		Mockito.verify(studentStatusRepository).save(objEntity);
 		
 	}
 	
@@ -1126,15 +1025,13 @@ public class CodeServiceTest {
 		objEntity.setCreatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		Optional<StudentStatusEntity> ent = Optional.of(objEntity);
-		Mockito.when(studentStatusTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(studentStatusRepository.findById(obj.getCode())).thenReturn(ent);
 		Mockito.when(studentStatusRepository.save(objEntity)).thenReturn(objEntity);
 		codeService.updateStudentStatus(obj);
-		Mockito.verify(studentStatusRepository).save(objEntity);
 		
 	}
 	
-	@Test
+	@Test(expected = GradBusinessRuleException.class)
 	public void testUpdateStudentStatus_codeAlreadyExists() {
 		StudentStatus obj = new StudentStatus();
 		obj.setCode("DC");
@@ -1150,7 +1047,6 @@ public class CodeServiceTest {
 		objEntity.setUpdatedBy("GRADUATION");
 		objEntity.setCreatedTimestamp(new Date(System.currentTimeMillis()));
 		objEntity.setUpdatedTimestamp(new Date(System.currentTimeMillis()));
-		Mockito.when(studentStatusTransformer.transformToEntity(obj)).thenReturn(objEntity);
 		Mockito.when(studentStatusRepository.findById(obj.getCode())).thenReturn(Optional.empty());
 		codeService.updateStudentStatus(obj);
 		
